@@ -1,0 +1,147 @@
+@import 'reset';
+
+/*
+ * Global constants goes here
+ */
+:root {
+    --primary-color: #42b983;
+}
+
+
+/*
+ * Global CSS goes here, it requires to use :global before each style
+ */
+:global *{
+  box-sizing: border-box;
+  text-size-adjust:none;
+}
+
+:global html {
+  height: 100%;
+}
+
+:global body{
+	font-family: 'Inconsolata', monospace;
+	background-color: #111;
+	color:#fff;
+	font-size: 12px;
+	line-height: 1.4em;
+}
+
+:global body.loading{
+	opacity: .5;
+	cursor:wait;
+
+	main, aside{
+		pointer-events:none;
+	}
+}
+
+:global aside{
+	position: absolute;
+	top: 0;
+	left: 0;
+	min-height: 100vh;
+	width: 200px;
+	border-right:1px solid #333;
+}
+
+:global main{
+	padding: 20px 20px 20px 220px;
+	min-height:100vh;
+}
+
+:global .images{
+	list-style-type: none;
+	border-bottom: 1px solid #333;
+	cursor: pointer;
+	display: block;
+	word-break: break-all;
+	margin-top: 20px;
+}
+
+:global .crawled a,
+:global .uncrawled a{
+	display: block;
+	padding: 5px 10px;
+	border-bottom: 1px solid #333;
+	// color:#666;
+	color:#fff;
+	cursor:pointer;
+	word-break:break-all;
+}
+
+:global .crawled a{
+	background-color: #aaa;
+	color:#333;
+}
+
+:global .page-url,
+:global .image-url{
+	color:#fff;
+}
+
+:global .image-size.bad{
+	background-color: #ff9a9a;
+	color:#333;
+}
+
+:global td{
+	padding: 5px;
+	max-width: calc(100vw - 240px);
+	word-break: break-all;
+	min-width: 150px;
+	a{
+		color:#fff;
+		text-decoration: none;
+		&:hover{
+			text-decoration: underline;
+		}
+	}
+}
+
+:global td:nth-child(odd){
+	background-color: #222;
+}
+:global .found-row{
+	background-color: #222;
+}
+:global .found-row td a{
+	color:#666;
+	font-size: 10px;
+}
+
+:global .menu{
+	padding: 10px;
+	border-bottom: 1px solid #333;
+}
+
+:global .menu a{
+	display: inline-block;
+
+	width: 100%;
+	padding: 10px;
+	text-align: center;
+	text-transform: uppercase;
+	background-color: #222;
+	color:#fff;
+	text-decoration: none;
+	margin-bottom: 10px;
+
+	&:hover{
+		background-color: #333
+	}
+}
+
+:global .page[active='true']{
+	border:1px solid limegreen;
+}
+
+:global .dots>div{
+	width: 10px;
+	height: 10px;
+	background-color: #fff;
+	margin: 5px;
+	display: inline-block;
+
+}
