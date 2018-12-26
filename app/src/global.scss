@@ -100,17 +100,6 @@
 	}
 }
 
-:global td:nth-child(odd){
-	background-color: #222;
-}
-:global .found-row{
-	background-color: #222;
-}
-:global .found-row td a{
-	color:#666;
-	font-size: 10px;
-}
-
 :global .menu{
 	padding: 10px;
 	border-bottom: 1px solid #333;
@@ -133,15 +122,26 @@
 	}
 }
 
-:global .page[active='true']{
-	border:1px solid limegreen;
+:global .patternsPane {
+  width: 100%;
+  display: grid;
 }
 
-:global .dots>div{
-	width: 10px;
-	height: 10px;
-	background-color: #fff;
-	margin: 5px;
-	display: inline-block;
+:global .patternBoxesContainer {
+  display: grid;
+  grid-template-columns: repeat(16, 50px);
+}
+
+:global .patternBox {
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+  padding: 0px;
+  font-size: 150%;
+  width: 40px;
+  height: 40px;
+}
+
+:gloabal .patternsFunctionsContainer {
 
 }

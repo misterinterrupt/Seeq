@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {render} from 'react-dom'
+var u = require('updeep');
 import Patterns from "./components/Patterns/"
 import Phrases from "./components/Phrases/"
 import PhraseChains from "./components/PhraseChains/"
@@ -31,9 +32,10 @@ export default class App extends Component {
   }
 
   handleMenuItemClick(label) {
-    console.log(label + " clicked");
-    this.state.showing[label] = !this.state.showing[label];
-    console.log(this.state.showing);
+    console.log(label + " clicked. " + this.state.showing[label]);
+    let showing = {...this.state.showing, [label]: !this.state.showing[label]};
+    this.setState({"showing":showing});
+    console.log(this.state.showing[label]);
   }
 
   renderMenuItem(label) {
@@ -43,22 +45,22 @@ export default class App extends Component {
             />
   }
 
-  renderPages(showing) {
+  renderPages() {
     return (
       <div className="Pages">
-        {showing["Patterns"] &&
+        {this.state.showing["Patterns"] &&
           <Patterns />
         }
-        {showing["Phrases"] &&
+        {this.state.showing["Phrases"] &&
           <Phrases />
         }
-        {showing["Phrase Chains"] &&
+        {this.state.showing["Phrase Chains"] &&
           <PhraseChains />
         }
-        {showing["Functions"] &&
+        {this.state.showing["Functions"] &&
           <Functions />
         }
-        {showing["Audio Matrix"] &&
+        {this.state.showing["Audio Matrix"] &&
           <AudioMatrix />
         }
       </div>
@@ -78,7 +80,7 @@ export default class App extends Component {
           </div>
         </aside>
         <main>
-          {this.renderPages(this.state.showing)}
+          {this.renderPages()}
         </main>
       </div>
     )
