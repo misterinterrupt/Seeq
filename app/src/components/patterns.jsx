@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import styles from './styles.css'
 
 class FunctionButton extends Component {
 
@@ -30,25 +29,14 @@ class PatternBox extends Component {
 export default class Patterns extends Component {
 
     // render boxes that represent the patterns in this pattern
-  renderPatternBoxes() {
+  renderPatternBoxes(maxPatterns=32) {
+    let patternBoxes = [];
+    for(let i=0; i<0; i++) {
+      patternBoxes.push(<PatternBox key={i}/>);
+    }
     return (
       <React.Fragment>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
-        <PatternBox/>
+      {patternBoxes}
       </React.Fragment>
     )
   }
@@ -59,10 +47,6 @@ export default class Patterns extends Component {
         <div className="patternBoxesContainer">
           {this.renderPatternBoxes()}
         </div>
-        <div className="patternsFunctionsContainer">
-          <FunctionButton className="addPatternBtn" label="Add Pattern" />
-        </div>
-
       </div>
     )
   }

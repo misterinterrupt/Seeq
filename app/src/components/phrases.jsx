@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import styles from './styles.css'
-import Note from "../Note/"
+import Note from "./note.jsx"
 
 export default class Phrases extends Component {
 

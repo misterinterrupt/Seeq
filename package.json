@@ -25,14 +25,17 @@
     "file-loader": "^1.1.10",
     "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.2",
+    "react-redux": "^6.0.0",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
+    "updeep": "^1.1.0",
     "webpack": "^4.1.1",
     "webpack-cli": "^3.1.1"
   },
   "dependencies": {
     "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "updeep": "^1.1.0"
+    "react-dom": "^16.2.0"
   }
 }
