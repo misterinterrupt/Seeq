@@ -1,11 +1,8 @@
-// action types
+// action types for patternGrid
 
-export const TOGGLE_PATTERN_CELL = 'TOGGLE_PATTERN_CELL';
+export const ADD_SELECT_PATTERN = 'ADD_SELECT_PATTERN';
 
-// action creators
+// create action for selecting a pattern slot in the pattern grid
+// (adds a new pattern if one does not exist at that index)
 
-export const togglePatternCell = ({x, y}) => ({
-  type: TOGGLE_PATTERN_CELL,
-  x,
-  y
-})
+export const addSelectPattern = (id) => ({ type: ADD_SELECT_PATTERN, id })

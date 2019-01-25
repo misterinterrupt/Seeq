@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import PatternEditor from '../containers/PatternEditor'
+import PatternEditor from '../components/PatternEditor'
 
 const App = () => (
     <PatternEditor />

@@ -9,26 +9,25 @@
 
 
 /*
- * Global CSS goes here, it requires to use :global before each style
+ * Global CSS goes here, it requires to use before each style
  */
-:global *{
+*{
   box-sizing: border-box;
   text-size-adjust:none;
 }
 
-:global html {
+html {
   height: 100%;
 }
 
-:global body{
+body{
 	font-family: 'Inconsolata', monospace;
 	background-color: #111;
 	color:#fff;
 	font-size: 12px;
 	line-height: 1.4em;
 }
-
-:global body.loading{
+body.loading{
 	opacity: .5;
 	cursor:wait;
 
@@ -37,7 +36,7 @@
 	}
 }
 
-:global aside{
+aside{
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -46,47 +45,22 @@
 	border-right:1px solid #333;
 }
 
-:global main{
-	padding: 20px 20px 20px 220px;
+#root{
+	// padding: 20px 20px 20px 220px;
 	min-height:100vh;
 }
 
-:global .images{
-	list-style-type: none;
-	border-bottom: 1px solid #333;
-	cursor: pointer;
-	display: block;
-	word-break: break-all;
-	margin-top: 20px;
-}
-
-:global .crawled a,
-:global .uncrawled a{
-	display: block;
-	padding: 5px 10px;
-	border-bottom: 1px solid #333;
-	// color:#666;
-	color:#fff;
-	cursor:pointer;
-	word-break:break-all;
-}
-
-:global .crawled a{
-	background-color: #aaa;
-	color:#333;
-}
-
-:global .page-url,
-:global .image-url{
+.page-url,
+.image-url{
 	color:#fff;
 }
 
-:global .image-size.bad{
+.image-size.bad{
 	background-color: #ff9a9a;
 	color:#333;
 }
 
-:global td{
+td{
 	padding: 5px;
 	max-width: calc(100vw - 240px);
 	word-break: break-all;
@@ -100,12 +74,12 @@
 	}
 }
 
-:global .menu{
+.menu{
 	padding: 10px;
 	border-bottom: 1px solid #333;
 }
 
-:global .menu a{
+.menu a{
 	display: inline-block;
 
 	width: 100%;
@@ -122,26 +96,37 @@
 	}
 }
 
-:global .patternsPane {
+.patternEditor {
   width: 100%;
   display: grid;
 }
 
-:global .patternBoxesContainer {
+#patternGrid {
+  margin: 2vw;
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(16, 50px);
+  grid-gap: 5px;
+  grid-template-columns: repeat(8, 75px);
 }
 
-:global .patternBox {
-  background-color: #444;
+.patternCell {
+  background-color: #1F1F1F;
   color: #fff;
-  border-radius: 5px;
+  border: 2px dotted #EC0396;
+  border-radius: 4px;
   padding: 0px;
   font-size: 150%;
-  width: 40px;
-  height: 40px;
-}
+  width: 75px;
+  height: 50px;
 
-:gloabal .patternsFunctionsContainer {
+  &.patternSelected {
+    border-width: 4px;
+    border-top-right-radius: 0px;
+    border-color: #00C7FF;
+  }
 
+  &.patternExists {
+    background-color: #1D1D1D;
+    border-style: solid;
+  }
 }

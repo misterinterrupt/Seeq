@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Grid from "./Grid";
+import SelectablePatternGrid from "../containers/SelectablePatternGrid";
 
 const PatternEditor = () => (
   <div id="patternEditor">
-    <Grid />
+    <SelectablePatternGrid />
   </div>
 );
 

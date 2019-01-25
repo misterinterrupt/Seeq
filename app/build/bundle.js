@@ -99,20 +99,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-// action types
+// action types for patternGrid
 
-var TOGGLE_PATTERN_CELL = exports.TOGGLE_PATTERN_CELL = 'TOGGLE_PATTERN_CELL';
+var ADD_SELECT_PATTERN = exports.ADD_SELECT_PATTERN = 'ADD_SELECT_PATTERN';
 
-// action creators
+// create action for selecting a pattern slot in the pattern grid
+// (adds a new pattern if one does not exist at that index)
 
-var togglePatternCell = exports.togglePatternCell = function togglePatternCell(_ref) {
-  var x = _ref.x,
-      y = _ref.y;
-  return {
-    type: TOGGLE_PATTERN_CELL,
-    x: x,
-    y: y
-  };
+var addSelectPattern = exports.addSelectPattern = function addSelectPattern(id) {
+  return { type: ADD_SELECT_PATTERN, id: id };
 };
 
 /***/ }),
@@ -135,7 +130,7 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _PatternEditor = __webpack_require__(/*! ../containers/PatternEditor */ "./app/src/containers/PatternEditor.jsx");
+var _PatternEditor = __webpack_require__(/*! ../components/PatternEditor */ "./app/src/components/PatternEditor.jsx");
 
 var _PatternEditor2 = _interopRequireDefault(_PatternEditor);
 
@@ -149,168 +144,9 @@ exports.default = App;
 
 /***/ }),
 
-/***/ "./app/src/components/Cell.jsx":
-/*!*************************************!*\
-  !*** ./app/src/components/Cell.jsx ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Cell = function Cell(id) {
-  return _react2.default.createElement('div', { 'class': 'patternCell' });
-};
-
-exports.default = Cell;
-
-/***/ }),
-
-/***/ "./app/src/components/Row.jsx":
-/*!************************************!*\
-  !*** ./app/src/components/Row.jsx ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _Cell = __webpack_require__(/*! ./Cell */ "./app/src/components/Cell.jsx");
-
-var _Cell2 = _interopRequireDefault(_Cell);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Row = function Row(_ref) {
-  var children = _ref.children;
-  return _react2.default.createElement(
-    'div',
-    { 'class': 'patternRow' },
-    children
-  );
-};
-
-exports.default = Row;
-
-/***/ }),
-
-/***/ "./app/src/containers/Grid.jsx":
-/*!*************************************!*\
-  !*** ./app/src/containers/Grid.jsx ***!
-  \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-// import Cell from '../components/Cell';
-
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-
-var _redux = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
-
-var _Row = __webpack_require__(/*! ../components/Row */ "./app/src/components/Row.jsx");
-
-var _Row2 = _interopRequireDefault(_Row);
-
-var _actions = __webpack_require__(/*! ../actions */ "./app/src/actions/index.js");
-
-var Actions = _interopRequireWildcard(_actions);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Grid = function Grid(_ref) {
-  var width = _ref.width,
-      height = _ref.height,
-      cells = _ref.cells,
-      actions = _ref.actions;
-
-  var rows = [];
-
-  var _loop = function _loop(y) {
-    var rowCells = [];
-
-    var _loop2 = function _loop2(x) {
-      rowCells.push(_react2.default.createElement(Cell, {
-        key: x,
-        onClick: function onClick() {
-          return actions.toggleCell({ x: x, y: y });
-        },
-        filled: cells[y * width + x] === 1
-      }));
-    };
-
-    for (var x = 0; x < width; x++) {
-      _loop2(x);
-    }
-    rows.push(_react2.default.createElement(
-      _Row2.default,
-      { key: y },
-      rowCells
-    ));
-  };
-
-  for (var y = 0; y < height; y++) {
-    _loop(y);
-  }
-
-  return _react2.default.createElement(
-    'div',
-    { id: 'patternGrid' },
-    rows
-  );
-};
-
-var mapStateToProps = function mapStateToProps(state) {
-  return _extends({}, state);
-};
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return {
-    actions: (0, _redux.bindActionCreators)(Actions, dispatch)
-  };
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Grid);
-
-/***/ }),
-
-/***/ "./app/src/containers/PatternEditor.jsx":
+/***/ "./app/src/components/PatternEditor.jsx":
 /*!**********************************************!*\
-  !*** ./app/src/containers/PatternEditor.jsx ***!
+  !*** ./app/src/components/PatternEditor.jsx ***!
   \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -326,9 +162,9 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Grid = __webpack_require__(/*! ./Grid */ "./app/src/containers/Grid.jsx");
+var _SelectablePatternGrid = __webpack_require__(/*! ../containers/SelectablePatternGrid */ "./app/src/containers/SelectablePatternGrid.jsx");
 
-var _Grid2 = _interopRequireDefault(_Grid);
+var _SelectablePatternGrid2 = _interopRequireDefault(_SelectablePatternGrid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -336,11 +172,135 @@ var PatternEditor = function PatternEditor() {
   return _react2.default.createElement(
     "div",
     { id: "patternEditor" },
-    _react2.default.createElement(_Grid2.default, null)
+    _react2.default.createElement(_SelectablePatternGrid2.default, null)
   );
 };
 
 exports.default = PatternEditor;
+
+/***/ }),
+
+/***/ "./app/src/components/PatternGrid.jsx":
+/*!********************************************!*\
+  !*** ./app/src/components/PatternGrid.jsx ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _actions = __webpack_require__(/*! ../actions */ "./app/src/actions/index.js");
+
+var _actions2 = _interopRequireDefault(_actions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var PatternGrid = function PatternGrid(_ref) {
+  var patternData = _ref.patternData,
+      onPatternCellClick = _ref.onPatternCellClick;
+
+  var patternsPerPage = 16;
+  var cells = [];
+
+  var _loop = function _loop(x) {
+    var patternSelected = patternData.selected.includes(x);
+    var patternExists = patternData.existing.filter(function (id) {
+      return id === x;
+    }).length === 1;
+    cells.push(_react2.default.createElement('div', {
+      className: (0, _classnames2.default)({
+        'patternCell': true,
+        'patternSelected': patternSelected,
+        'patternExists': patternExists
+      }),
+      key: x,
+      onClick: function onClick() {
+        return onPatternCellClick(x);
+      }
+    }));
+  };
+
+  for (var x = 0; x < patternsPerPage; x++) {
+    _loop(x);
+  }
+  return _react2.default.createElement(
+    'div',
+    { id: 'patternGrid' },
+    cells
+  );
+};
+
+exports.default = PatternGrid;
+
+/***/ }),
+
+/***/ "./app/src/containers/SelectablePatternGrid.jsx":
+/*!******************************************************!*\
+  !*** ./app/src/containers/SelectablePatternGrid.jsx ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+var _PatternGrid = __webpack_require__(/*! ../components/PatternGrid */ "./app/src/components/PatternGrid.jsx");
+
+var _PatternGrid2 = _interopRequireDefault(_PatternGrid);
+
+var _actions = __webpack_require__(/*! ../actions */ "./app/src/actions/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var getPatternGridData = function getPatternGridData(patterns, editorData) {
+  return {
+    existing: patterns.map(function (pattern) {
+      return pattern.id;
+    }),
+    selected: editorData.selectedPatterns
+  };
+};
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    patternData: getPatternGridData(state.patterns, state.editorData)
+  };
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    onPatternCellClick: function onPatternCellClick(id) {
+      return dispatch((0, _actions.addSelectPattern)(id));
+    }
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_PatternGrid2.default);
 
 /***/ }),
 
@@ -374,10 +334,10 @@ if(false) {}
 
 /***/ }),
 
-/***/ "./app/src/reducers/patternGrid.js":
-/*!*****************************************!*\
-  !*** ./app/src/reducers/patternGrid.js ***!
-  \*****************************************/
+/***/ "./app/src/reducers/index.js":
+/*!***********************************!*\
+  !*** ./app/src/reducers/index.js ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -392,30 +352,33 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _actions = __webpack_require__(/*! ../actions */ "./app/src/actions/index.js");
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var patternGrid = function patternGrid(state, action) {
+var selectablePatternGrid = function selectablePatternGrid(state, action) {
   switch (action.type) {
-    case _actions.TOGGLE_PATTERN_CELL:
+    case _actions.ADD_SELECT_PATTERN:
 
-      var patternCells = [].concat(_toConsumableArray(state.patterns));
-      var x = action.x,
-          y = action.y;
+      var newPattern = [];
+      var patternExists = state.patterns.filter(function (pattern) {
+        return pattern.id === action.id;
+      }).length === 1;
 
-
-      var val = patternCells[y * state.width + x];
-
-      patternCells[y * state.width + x] = val === 1 ? 0 : 1;
+      if (!patternExists) {
+        newPattern = [{ id: action.id }];
+      }
 
       return _extends({}, state, {
-        patterns: patternCells
+        editorData: {
+          selectedPatterns: [action.id]
+        },
+        patterns: newPattern.concat(state.patterns).sort(function (a, b) {
+          return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+        })
       });
     default:
       return state;
   }
 };
 
-exports.default = patternGrid;
+exports.default = selectablePatternGrid;
 
 /***/ }),
 
@@ -447,19 +410,22 @@ var _App = __webpack_require__(/*! ./components/App */ "./app/src/components/App
 
 var _App2 = _interopRequireDefault(_App);
 
-var _patternGrid = __webpack_require__(/*! ./reducers/patternGrid */ "./app/src/reducers/patternGrid.js");
+var _reducers = __webpack_require__(/*! ./reducers */ "./app/src/reducers/index.js");
 
-var _patternGrid2 = _interopRequireDefault(_patternGrid);
+var _reducers2 = _interopRequireDefault(_reducers);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var logger = (0, _reduxLogger.createLogger)();
 
 var initialState = {
-  pattern: [[], []]
+  editorData: {
+    selectedPatterns: [0]
+  },
+  patterns: [{ id: 0 }, { id: 1 }, { id: 2 }]
 };
 
-var store = (0, _redux.createStore)(_patternGrid2.default, initialState, (0, _redux.applyMiddleware)(logger));
+var store = (0, _redux.createStore)(_reducers2.default, initialState, (0, _redux.applyMiddleware)(logger));
 
 var rootElement = document.getElementById('root');
 
@@ -566,6 +532,68 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 
 /***/ }),
 
+/***/ "./node_modules/classnames/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/classnames/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if ( true && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}());
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js!./node_modules/sass-loader/lib/loader.js!./app/src/global.scss":
 /*!************************************************************************************************!*\
   !*** ./node_modules/css-loader!./node_modules/sass-loader/lib/loader.js!./app/src/global.scss ***!
@@ -578,7 +606,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/*\n * Global constants goes here\n */\n:root {\n  --primary-color: #42b983; }\n\n/*\n * Global CSS goes here, it requires to use :global before each style\n */\n* {\n  box-sizing: border-box;\n  text-size-adjust: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\nmain {\n  padding: 20px 20px 20px 220px;\n  min-height: 100vh; }\n\n.images {\n  list-style-type: none;\n  border-bottom: 1px solid #333;\n  cursor: pointer;\n  display: block;\n  word-break: break-all;\n  margin-top: 20px; }\n\n.crawled a,\n.uncrawled a {\n  display: block;\n  padding: 5px 10px;\n  border-bottom: 1px solid #333;\n  color: #fff;\n  cursor: pointer;\n  word-break: break-all; }\n\n.crawled a {\n  background-color: #aaa;\n  color: #333; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.patternsPane {\n  width: 100%;\n  display: grid; }\n\n.patternBoxesContainer {\n  display: grid;\n  grid-template-columns: repeat(16, 50px); }\n\n.patternBox {\n  background-color: #444;\n  color: #fff;\n  border-radius: 5px;\n  padding: 0px;\n  font-size: 150%;\n  width: 40px;\n  height: 40px; }\n", ""]);
+exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/*\n * Global constants goes here\n */\n:root {\n  --primary-color: #42b983; }\n\n/*\n * Global CSS goes here, it requires to use before each style\n */\n* {\n  box-sizing: border-box;\n  text-size-adjust: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\n#root {\n  min-height: 100vh; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.patternEditor {\n  width: 100%;\n  display: grid; }\n\n#patternGrid {\n  margin: 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.patternCell {\n  background-color: #1F1F1F;\n  color: #fff;\n  border: 2px dotted #EC0396;\n  border-radius: 4px;\n  padding: 0px;\n  font-size: 150%;\n  width: 75px;\n  height: 50px; }\n  .patternCell.patternSelected {\n    border-width: 4px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n  .patternCell.patternExists {\n    background-color: #1D1D1D;\n    border-style: solid; }\n", ""]);
 
 // exports
 
