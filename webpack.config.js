@@ -14,13 +14,16 @@ module.exports = {
         filename: 'bundle.js'
     },
 
+    devtool: 'source-map',
+
     module: {
         rules: [
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
+                exclude:  /(node_modules|bower_components)/,
                 options: {
-                    presets: ['react']
+                    presets: ['es2015', 'stage-0', 'react']
                 }
             },
             {
