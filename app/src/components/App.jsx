@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import PatternEditor from '../components/PatternEditor'
+import SectionEditor from '../components/SectionEditor'
 
 const App = () => (
-    <PatternEditor />
+    <SectionEditor />
 )
 
 export default App

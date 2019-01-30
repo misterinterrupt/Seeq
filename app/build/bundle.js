@@ -99,15 +99,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-// action types for patternGrid
+// action types for sectionGrid
 
-var ADD_SELECT_PATTERN = exports.ADD_SELECT_PATTERN = 'ADD_SELECT_PATTERN';
+var ADD_SELECT_SECTION = exports.ADD_SELECT_SECTION = 'ADD_SELECT_SECTION';
 
-// create action for selecting a pattern slot in the pattern grid
-// (adds a new pattern if one does not exist at that index)
+// create action for selecting a section slot in the section grid
+// (adds a new section if one does not exist at that index)
 
-var addSelectPattern = exports.addSelectPattern = function addSelectPattern(id) {
-  return { type: ADD_SELECT_PATTERN, id: id };
+var addSelectSection = exports.addSelectSection = function addSelectSection(id) {
+  return { type: ADD_SELECT_SECTION, id: id };
 };
 
 /***/ }),
@@ -130,23 +130,23 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _PatternEditor = __webpack_require__(/*! ../components/PatternEditor */ "./app/src/components/PatternEditor.jsx");
+var _SectionEditor = __webpack_require__(/*! ../components/SectionEditor */ "./app/src/components/SectionEditor.jsx");
 
-var _PatternEditor2 = _interopRequireDefault(_PatternEditor);
+var _SectionEditor2 = _interopRequireDefault(_SectionEditor);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App() {
-    return _react2.default.createElement(_PatternEditor2.default, null);
+    return _react2.default.createElement(_SectionEditor2.default, null);
 };
 
 exports.default = App;
 
 /***/ }),
 
-/***/ "./app/src/components/PatternEditor.jsx":
+/***/ "./app/src/components/SectionEditor.jsx":
 /*!**********************************************!*\
-  !*** ./app/src/components/PatternEditor.jsx ***!
+  !*** ./app/src/components/SectionEditor.jsx ***!
   \**********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -162,27 +162,27 @@ var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _SelectablePatternGrid = __webpack_require__(/*! ../containers/SelectablePatternGrid */ "./app/src/containers/SelectablePatternGrid.jsx");
+var _SelectableSectionGrid = __webpack_require__(/*! ../containers/SelectableSectionGrid */ "./app/src/containers/SelectableSectionGrid.jsx");
 
-var _SelectablePatternGrid2 = _interopRequireDefault(_SelectablePatternGrid);
+var _SelectableSectionGrid2 = _interopRequireDefault(_SelectableSectionGrid);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var PatternEditor = function PatternEditor() {
+var SectionEditor = function SectionEditor() {
   return _react2.default.createElement(
     "div",
-    { id: "patternEditor" },
-    _react2.default.createElement(_SelectablePatternGrid2.default, null)
+    { id: "sectionEditor" },
+    _react2.default.createElement(_SelectableSectionGrid2.default, null)
   );
 };
 
-exports.default = PatternEditor;
+exports.default = SectionEditor;
 
 /***/ }),
 
-/***/ "./app/src/components/PatternGrid.jsx":
+/***/ "./app/src/components/SectionGrid.jsx":
 /*!********************************************!*\
-  !*** ./app/src/components/PatternGrid.jsx ***!
+  !*** ./app/src/components/SectionGrid.jsx ***!
   \********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -210,48 +210,48 @@ var _actions2 = _interopRequireDefault(_actions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var PatternGrid = function PatternGrid(_ref) {
-  var patternData = _ref.patternData,
-      onPatternCellClick = _ref.onPatternCellClick;
+var SectionGrid = function SectionGrid(_ref) {
+  var sectionData = _ref.sectionData,
+      onSectionCellClick = _ref.onSectionCellClick;
 
-  var patternsPerPage = 16;
+  var sectionsPerPage = 16;
   var cells = [];
 
   var _loop = function _loop(x) {
-    var patternSelected = patternData.selected.includes(x);
-    var patternExists = patternData.existing.filter(function (id) {
+    var sectionSelected = sectionData.selected.includes(x);
+    var sectionExists = sectionData.existing.filter(function (id) {
       return id === x;
     }).length === 1;
     cells.push(_react2.default.createElement('div', {
       className: (0, _classnames2.default)({
-        'patternCell': true,
-        'patternSelected': patternSelected,
-        'patternExists': patternExists
+        'sectionCell': true,
+        'sectionSelected': sectionSelected,
+        'sectionExists': sectionExists
       }),
       key: x,
       onClick: function onClick() {
-        return onPatternCellClick(x);
+        return onSectionCellClick(x);
       }
     }));
   };
 
-  for (var x = 0; x < patternsPerPage; x++) {
+  for (var x = 0; x < sectionsPerPage; x++) {
     _loop(x);
   }
   return _react2.default.createElement(
     'div',
-    { id: 'patternGrid' },
+    { id: 'sectionGrid' },
     cells
   );
 };
 
-exports.default = PatternGrid;
+exports.default = SectionGrid;
 
 /***/ }),
 
-/***/ "./app/src/containers/SelectablePatternGrid.jsx":
+/***/ "./app/src/containers/SelectableSectionGrid.jsx":
 /*!******************************************************!*\
-  !*** ./app/src/containers/SelectablePatternGrid.jsx ***!
+  !*** ./app/src/containers/SelectableSectionGrid.jsx ***!
   \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -269,38 +269,38 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 
-var _PatternGrid = __webpack_require__(/*! ../components/PatternGrid */ "./app/src/components/PatternGrid.jsx");
+var _SectionGrid = __webpack_require__(/*! ../components/SectionGrid */ "./app/src/components/SectionGrid.jsx");
 
-var _PatternGrid2 = _interopRequireDefault(_PatternGrid);
+var _SectionGrid2 = _interopRequireDefault(_SectionGrid);
 
 var _actions = __webpack_require__(/*! ../actions */ "./app/src/actions/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var getPatternGridData = function getPatternGridData(patterns, editorData) {
+var getSectionGridData = function getSectionGridData(sections, editorData) {
   return {
-    existing: patterns.map(function (pattern) {
-      return pattern.id;
+    existing: sections.map(function (section) {
+      return section.id;
     }),
-    selected: editorData.selectedPatterns
+    selected: editorData.selectedSections
   };
 };
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    patternData: getPatternGridData(state.patterns, state.editorData)
+    sectionData: getSectionGridData(state.sections, state.editorData)
   };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    onPatternCellClick: function onPatternCellClick(id) {
-      return dispatch((0, _actions.addSelectPattern)(id));
+    onSectionCellClick: function onSectionCellClick(id) {
+      return dispatch((0, _actions.addSelectSection)(id));
     }
   };
 };
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_PatternGrid2.default);
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_SectionGrid2.default);
 
 /***/ }),
 
@@ -352,24 +352,24 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _actions = __webpack_require__(/*! ../actions */ "./app/src/actions/index.js");
 
-var selectablePatternGrid = function selectablePatternGrid(state, action) {
+var selectableSectionGrid = function selectableSectionGrid(state, action) {
   switch (action.type) {
-    case _actions.ADD_SELECT_PATTERN:
+    case _actions.ADD_SELECT_SECTION:
 
-      var newPattern = [];
-      var patternExists = state.patterns.filter(function (pattern) {
-        return pattern.id === action.id;
+      var newSection = [];
+      var sectionExists = state.sections.filter(function (section) {
+        return section.id === action.id;
       }).length === 1;
 
-      if (!patternExists) {
-        newPattern = [{ id: action.id }];
+      if (!sectionExists) {
+        newSection = [{ id: action.id }];
       }
 
       return _extends({}, state, {
         editorData: {
-          selectedPatterns: [action.id]
+          selectedSections: [action.id]
         },
-        patterns: newPattern.concat(state.patterns).sort(function (a, b) {
+        sections: newSection.concat(state.sections).sort(function (a, b) {
           return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
         })
       });
@@ -378,7 +378,7 @@ var selectablePatternGrid = function selectablePatternGrid(state, action) {
   }
 };
 
-exports.default = selectablePatternGrid;
+exports.default = selectableSectionGrid;
 
 /***/ }),
 
@@ -420,9 +420,9 @@ var logger = (0, _reduxLogger.createLogger)();
 
 var initialState = {
   editorData: {
-    selectedPatterns: [0]
+    selectedSections: [0]
   },
-  patterns: [{ id: 0 }, { id: 1 }, { id: 2 }]
+  sections: [{ id: 0 }, { id: 1 }, { id: 2 }]
 };
 
 var store = (0, _redux.createStore)(_reducers2.default, initialState, (0, _redux.applyMiddleware)(logger));
@@ -606,7 +606,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/*\n * Global constants goes here\n */\n:root {\n  --primary-color: #42b983; }\n\n/*\n * Global CSS goes here, it requires to use before each style\n */\n* {\n  box-sizing: border-box;\n  text-size-adjust: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\n#root {\n  min-height: 100vh; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.patternEditor {\n  width: 100%;\n  display: grid; }\n\n#patternGrid {\n  margin: 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.patternCell {\n  background-color: #1F1F1F;\n  color: #fff;\n  border: 2px dotted #EC0396;\n  border-radius: 4px;\n  padding: 0px;\n  font-size: 150%;\n  width: 75px;\n  height: 50px; }\n  .patternCell.patternSelected {\n    border-width: 4px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n  .patternCell.patternExists {\n    background-color: #1D1D1D;\n    border-style: solid; }\n", ""]);
+exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/*\n * Global constants goes here\n */\n:root {\n  --primary-color: #42b983; }\n\n/*\n * Global CSS goes here, it requires to use before each style\n */\n* {\n  box-sizing: border-box;\n  text-size-adjust: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\n#root {\n  min-height: 100vh; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.sectionEditor {\n  width: 100%;\n  display: grid; }\n\n#sectionGrid {\n  margin: 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.sectionCell {\n  background-color: #1F1F1F;\n  color: #fff;\n  border: 2px dotted #EC0396;\n  border-radius: 4px;\n  padding: 0px;\n  font-size: 150%;\n  width: 75px;\n  height: 50px; }\n  .sectionCell.sectionSelected {\n    border-width: 4px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n  .sectionCell.sectionExists {\n    background-color: #1D1D1D;\n    border-style: solid; }\n", ""]);
 
 // exports
 

@@ -1,28 +1,28 @@
 import {
-  ADD_SELECT_PATTERN
+  ADD_SELECT_SECTION
 } from '../actions';
 
-const selectablePatternGrid = (state, action) => {
+const selectableSectionGrid = (state, action) => {
   switch (action.type) {
-    case ADD_SELECT_PATTERN:
+    case ADD_SELECT_SECTION:
 
-      let newPattern = [];
-      let patternExists = state.patterns.filter(pattern => pattern.id === action.id).length === 1;
+      let newSection = [];
+      let sectionExists = state.sections.filter(section => section.id === action.id).length === 1;
 
-      if(!patternExists) {
-        newPattern = [{id:action.id}];
+      if(!sectionExists) {
+        newSection = [{id:action.id}];
       }
 
       return {
         ...state,
         editorData: {
-          selectedPatterns: [action.id]
+          selectedSections: [action.id]
         },
-        patterns: newPattern.concat(state.patterns).sort((a,b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
+        sections: newSection.concat(state.sections).sort((a,b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
       };
     default:
       return state;
   }
 };
 
-export default selectablePatternGrid;
+export default selectableSectionGrid;

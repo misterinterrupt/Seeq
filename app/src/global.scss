@@ -96,12 +96,12 @@ td{
 	}
 }
 
-.patternEditor {
+.sectionEditor {
   width: 100%;
   display: grid;
 }
 
-#patternGrid {
+#sectionGrid {
   margin: 2vw;
   width: 100%;
   display: grid;
@@ -109,7 +109,7 @@ td{
   grid-template-columns: repeat(8, 75px);
 }
 
-.patternCell {
+.sectionCell {
   background-color: #1F1F1F;
   color: #fff;
   border: 2px dotted #EC0396;
@@ -119,13 +119,13 @@ td{
   width: 75px;
   height: 50px;
 
-  &.patternSelected {
+  &.sectionSelected {
     border-width: 4px;
     border-top-right-radius: 0px;
     border-color: #00C7FF;
   }
 
-  &.patternExists {
+  &.sectionExists {
     background-color: #1D1D1D;
     border-style: solid;
   }
