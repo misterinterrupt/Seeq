@@ -1,8 +1,8 @@
-// action types for patternGrid
+// action types for sectionGrid
 
-export const ADD_SELECT_PATTERN = 'ADD_SELECT_PATTERN';
+export const ADD_SELECT_SECTION = 'ADD_SELECT_SECTION';
 
-// create action for selecting a pattern slot in the pattern grid
-// (adds a new pattern if one does not exist at that index)
+// create action for selecting a section slot in the section grid
+// (adds a new section if one does not exist at that index)
 
-export const addSelectPattern = (id) => ({ type: ADD_SELECT_PATTERN, id })
+export const addSelectSection = (id) => ({ type: ADD_SELECT_SECTION, id })

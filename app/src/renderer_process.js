@@ -6,18 +6,18 @@ import {createLogger} from 'redux-logger';
 import './global.scss';
 
 import App from './components/App';
-import patternGrid from './reducers';
+import sectionGrid from './reducers';
 
 const logger = createLogger();
 
 const initialState = {
   editorData: {
-    selectedPatterns: [0]
+    selectedSections: [0]
   },
-  patterns: [{id:0}, {id:1}, {id:2}]
+  sections: [{id:0}, {id:1}, {id:2}]
 };
 
-const store = createStore(patternGrid, initialState, applyMiddleware(logger));
+const store = createStore(sectionGrid, initialState, applyMiddleware(logger));
 
 const rootElement = document.getElementById('root');
 
