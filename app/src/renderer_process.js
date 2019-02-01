@@ -6,7 +6,7 @@ import {createLogger} from 'redux-logger';
 import './global.scss';
 
 import App from './components/App';
-import sectionGrid from './reducers';
+import rootReducer from './reducers';
 
 const logger = createLogger();
 
@@ -14,10 +14,23 @@ const initialState = {
   editorData: {
     selectedSections: [0]
   },
-  sections: [{id:0}, {id:1}, {id:2}]
+  sections: [
+    {
+      id: 0,
+      name: "section 0",
+      selectedSequenceSlot: 0,
+      sequenceSlots: [0]
+    }
+  ],
+  sequences: [
+    {
+      id: 0,
+      noteData: []
+    }
+  ]
 };
 
-const store = createStore(sectionGrid, initialState, applyMiddleware(logger));
+const store = createStore(rootReducer, initialState, applyMiddleware(logger));
 
 const rootElement = document.getElementById('root');
 

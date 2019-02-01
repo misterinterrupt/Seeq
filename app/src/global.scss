@@ -1,16 +1,9 @@
 @import 'reset';
 
-/*
- * Global constants goes here
- */
 :root {
     --primary-color: #42b983;
 }
 
-
-/*
- * Global CSS goes here, it requires to use before each style
- */
 *{
   box-sizing: border-box;
   text-size-adjust:none;
@@ -98,7 +91,6 @@ td{
 
 .sectionEditor {
   width: 100%;
-  display: grid;
 }
 
 #sectionGrid {
@@ -128,5 +120,46 @@ td{
   &.sectionExists {
     background-color: #1D1D1D;
     border-style: solid;
+  }
+}
+
+#sequenceSlotGrid {
+  margin: 2vw;
+  width: 100%;
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: repeat(8, 75px);
+}
+
+.addSequenceButton {
+  width: 75px;
+  height: 50px;
+  border: 2px solid #EC0396;
+  border-radius: 2px;
+  background-color: #2F2F2F;
+  outline: none;
+}
+
+.incrementableSequenceSlot {
+  padding: 4px;
+  width: 75px;
+  height: 50px;
+  border: 2px solid #EC0396;
+  border-radius: 2px;
+
+  button {
+    width:20px;
+
+    &.incUp {
+
+    }
+
+    &.incDown {
+
+    }
+
+    &.deleteSequence {
+
+    }
   }
 }

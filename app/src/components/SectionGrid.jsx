@@ -2,6 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
 
+import addSelectSection from '../actions';
+
 const SectionGrid = ({sectionData, onSectionCellClick}) => {
   let sectionsPerPage = 16;
   let cells = [];

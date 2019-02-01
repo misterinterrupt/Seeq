@@ -1,8 +1,17 @@
-import React, {Component} from 'react';
-import SectionEditor from '../components/SectionEditor'
+import React from 'react';
+
+import SelectableSectionGrid from "../containers/SelectableSectionGrid";
+import ExpandableSequenceSlotGrid from "../containers/ExpandableSequenceSlotGrid";
+
 
 const App = () => (
-    <SectionEditor />
-)
+  <div id="sectionEditor">
+    <p>sections</p>
+    <SelectableSectionGrid />
+    <div className="sectionInfo" />
+    <p>sequence slots</p>
+    <ExpandableSequenceSlotGrid />
+  </div>
+);
 
-export default App
+export default App;
