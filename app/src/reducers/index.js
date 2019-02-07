@@ -4,7 +4,8 @@ import {
   ADD_SELECT_SECTION,
   INCREMENT_SEQUENCE_SLOT_SEQUENCE,
   DECREMENT_SEQUENCE_SLOT_SEQUENCE,
-  ADD_SEQUENCE_TO_SECTION
+  ADD_SEQUENCE_TO_SECTION,
+  DELETE_SEQUENCE_FROM_SECTION
 } from '../actions';
 
 const rootReducer = (state={}, action) => {
@@ -102,6 +103,21 @@ const rootReducer = (state={}, action) => {
     };
   };
 
+  const deleteSequenceFromSection = (state, action) => {
+    let updatedSections = [...state.sections];
+    let sectionIndex = updatedSections.findIndex(section => {
+      return section.id === state.editorData.selectedSections[0]
+    });
+    updatedSections[sectionIndex] = {
+      ...updatedSections[sectionIndex],
+      sequenceslots: [...updatedSections[sectionIndex].sequenceSlots.splice(action.slotIndex, 1)]
+    }
+    return {
+      ...state,
+      sections: sortById(updatedSections)
+    };
+  }
+
   switch (action.type) {
     case ADD_SELECT_SECTION:
       return addSelectSection(state, action);
@@ -114,6 +130,9 @@ const rootReducer = (state={}, action) => {
 
     case ADD_SEQUENCE_TO_SECTION:
       return addSequenceToSection(state, action);
+
+    case DELETE_SEQUENCE_FROM_SECTION:
+      return deleteSequenceFromSection(state, action);
 
     default:
       return {...state};

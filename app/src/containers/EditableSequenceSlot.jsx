@@ -1,10 +1,9 @@
-  // combines two buttons for incrementing of a state variable which defined in props
 import React from 'react';
 import {connect} from 'react-redux';
 
-import { incrementSequenceSlotId, decrementSequenceSlotId } from '../actions';
+import { incrementSequenceSlotId, decrementSequenceSlotId, deleteSequenceFromSection } from '../actions';
 
-const EditableSequenceSlot = ({onDecrementClick, onIncrementClick, sectionId, sequenceSlotIndex, sequenceId}) => (
+const EditableSequenceSlot = ({onDecrementClick, onIncrementClick, onDeleteSequenceClick, sectionId, sequenceSlotIndex, sequenceId}) => (
   <div key={sequenceSlotIndex} className="incrementableSequenceSlot">
     <p>{sequenceId}</p>
     <button
@@ -17,6 +16,11 @@ const EditableSequenceSlot = ({onDecrementClick, onIncrementClick, sectionId, se
       onClick={() => onDecrementClick(sectionId, sequenceSlotIndex, sequenceId)}>
       -
     </button>
+    <button
+      className="deleteSequence"
+      onClick={() => onDeleteSequenceClick(sequenceSlotIndex)}>
+      x
+    </button>
   </div>
 );
 
@@ -28,7 +32,8 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownprops) => ({
   onIncrementClick: (sectionId, sequenceSlotIndex, sequenceId) => dispatch(incrementSequenceSlotId(sectionId, sequenceId, sequenceSlotIndex)),
-  onDecrementClick: (sectionId, sequenceSlotIndex, sequenceId) => dispatch(decrementSequenceSlotId(sectionId, sequenceId, sequenceSlotIndex))
+  onDecrementClick: (sectionId, sequenceSlotIndex, sequenceId) => dispatch(decrementSequenceSlotId(sectionId, sequenceId, sequenceSlotIndex)),
+  onDeleteSequenceClick: (sequenceSlotIndex) => dispatch(deleteSequenceFromSection(sequenceSlotIndex))
 });
 
 export default connect(
