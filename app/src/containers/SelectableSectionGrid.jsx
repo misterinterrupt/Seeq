@@ -4,13 +4,12 @@ import {connect} from 'react-redux';
 import SectionGrid from '../components/SectionGrid';
 import { addSelectSection } from '../actions';
 
-const getSectionGridData = (sections, editorData) => ({
-  existing: sections.map(section => section.id),
-  selected: editorData.selectedSections
-})
-
 const mapStateToProps = (state) => ({
-  sectionData: getSectionGridData(state.sections, state.editorData)
+  sectionData:
+    {
+      existing: state.sections.map(section => section.id),
+      selected: state.editorData.selectedSections
+    }
 });
 
 const mapDispatchToProps = (dispatch) => ({
