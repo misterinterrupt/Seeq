@@ -12,13 +12,14 @@ const logger = createLogger();
 
 const initialState = {
   editorData: {
-    selectedSections: [0]
+    selectedSections: [0],
+    selectedSequences: [0]
   },
   sections: [
     {
       id: 0,
       label: "section 0",
-      selectedSequenceSlot: 0,
+      selectedSequenceSlot: [0],
       sequenceSlots: [0]
     }
   ],

@@ -1,10 +1,18 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import classNames from 'classnames';
 
-import { incrementSequenceSlotId, decrementSequenceSlotId, deleteSequenceFromSection } from '../actions';
+import { selectSequenceSlot, incrementSequenceSlotId, decrementSequenceSlotId, deleteSequenceFromSection } from '../actions';
 
-const EditableSequenceSlot = ({onDecrementClick, onIncrementClick, onDeleteSequenceClick, sectionId, sequenceSlotIndex, sequenceId, sequenceLabel}) => (
-  <div key={sequenceSlotIndex} className="incrementableSequenceSlot">
+const EditableSequenceSlot = ({onSelectSequenceSlot, onDecrementClick, onIncrementClick, onDeleteSequenceClick, sectionId, sequenceSlotIndex, sequenceId, sequenceLabel, sequenceSelected}) => (
+  <div
+    key={sequenceSlotIndex}
+    className={classNames({
+      'incrementableSequenceSlot': true,
+      'sequenceSelected': sequenceSelected
+    })}
+    onClick={() => onSelectSequenceSlot(sequenceSlotIndex, sequenceId)}
+  >
     <div className="sequenceLabel">
       <p>{sequenceLabel}</p>
     </div>
@@ -21,7 +29,7 @@ const EditableSequenceSlot = ({onDecrementClick, onIncrementClick, onDeleteSeque
       </button>
       <button
         className="deleteSequence"
-        onClick={() => onDeleteSequenceClick(sequenceSlotIndex)}>
+        onClick={(e) => onDeleteSequenceClick(e, sequenceSlotIndex)}>
         x
       </button>
     </div>
@@ -32,13 +40,18 @@ const mapStateToProps = (state, ownProps) => ({
   sectionId: state.editorData.selectedSections[0],
   sequenceSlotIndex: ownProps.sequenceSlotIndex,
   sequenceId: ownProps.sequenceId,
-  sequenceLabel: ownProps.sequenceLabel
+  sequenceLabel: ownProps.sequenceLabel,
+  sequenceSelected: ownProps.sequenceSelected
 });
 
 const mapDispatchToProps = (dispatch, ownprops) => ({
+  onSelectSequenceSlot: (sequenceSlotIndex) => dispatch(selectSequenceSlot(sequenceSlotIndex)),
   onIncrementClick: (sectionId, sequenceSlotIndex, sequenceId) => dispatch(incrementSequenceSlotId(sectionId, sequenceSlotIndex, sequenceId)),
   onDecrementClick: (sectionId, sequenceSlotIndex, sequenceId) => dispatch(decrementSequenceSlotId(sectionId, sequenceSlotIndex, sequenceId)),
-  onDeleteSequenceClick: (sequenceSlotIndex) => dispatch(deleteSequenceFromSection(sequenceSlotIndex))
+  onDeleteSequenceClick: (e, sequenceSlotIndex) =>  {
+    e.stopPropagation();
+    dispatch(deleteSequenceFromSection(sequenceSlotIndex));
+  }
 });
 
 export default connect(
