@@ -17,7 +17,7 @@ const initialState = {
   sections: [
     {
       id: 0,
-      name: "section 0",
+      label: "section 0",
       selectedSequenceSlot: 0,
       sequenceSlots: [0]
     }
@@ -25,6 +25,7 @@ const initialState = {
   sequences: [
     {
       id: 0,
+      label: "seq 0",
       noteData: []
     }
   ]

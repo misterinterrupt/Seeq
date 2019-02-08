@@ -36,7 +36,7 @@ const rootReducer = (state={}, action) => {
     if(!sectionExists) {
       newSection = [{
         id: action.id,
-        name: "section " + action.id.toString(),
+        label: "section " + action.id.toString(),
         selectedSequenceSlot: 0,
         sequenceSlots: []
       }];
@@ -93,6 +93,7 @@ const rootReducer = (state={}, action) => {
       ...state.sequences,
       {
         id: newSequenceId,
+        label: "seq " + newSequenceId,
         noteData: []
       }
     ];
@@ -110,7 +111,7 @@ const rootReducer = (state={}, action) => {
     });
     updatedSections[sectionIndex] = {
       ...updatedSections[sectionIndex],
-      sequenceslots: [...updatedSections[sectionIndex].sequenceSlots.splice(action.slotIndex, 1)]
+      sequenceSlots: [...updatedSections[sectionIndex].sequenceSlots.splice(action.slotIndex, 1)]
     }
     return {
       ...state,

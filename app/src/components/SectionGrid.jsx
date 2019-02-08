@@ -10,6 +10,7 @@ const SectionGrid = ({sectionData, onSectionCellClick}) => {
     for (let x=0; x < sectionsPerPage; x++) {
       let sectionSelected = sectionData.selected.includes(x);
       let sectionExists = sectionData.existing.filter(id => id === x).length === 1;
+      let sectionLabel = (sectionData.sections.find(section => section.id === x) || {label:""}).label;
       cells.push(
         <div
           className={classNames({
@@ -19,7 +20,9 @@ const SectionGrid = ({sectionData, onSectionCellClick}) => {
           })}
           key={x}
           onClick={() => onSectionCellClick(x)}
-        />
+        >
+          <p className="sectionLabel">{sectionLabel}</p>
+        </div>
       );
     }
   return <div id="sectionGrid">{cells}</div>;
