@@ -1,5 +1,5 @@
 import React from 'react';
 
-const Cell = (id) => <div class='sectionCell'>section {id}</div>;
+const Cell = (sectionLabel) => <div class='sectionCell'>{sectionLabel}</div>;
 
 export default Cell;

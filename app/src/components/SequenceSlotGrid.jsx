@@ -4,19 +4,22 @@ import EditableSequenceSlot from '../containers/EditableSequenceSlot';
 
 const SequenceSlotGrid = ({ sectionSequences, onAddSequenceToSection }) => {
   const sequenceSlots = [];
-  sectionSequences.forEach((sequenceId, sequenceSlotIndex) => {
+  sectionSequences.forEach((sequence, sequenceSlotIndex) => {
     sequenceSlots.push(
       <EditableSequenceSlot
         sequenceSlotIndex={sequenceSlotIndex}
         key={sequenceSlotIndex}
-        sequenceId={sequenceId}
+        sequenceId={sequence.Id}
+        sequenceLabel={sequence.label}
       />
     );
   });
   return (
     <div id='sequenceSlotGrid'>
       {sequenceSlots}
-      <button className="addSequenceButton" onClick={onAddSequenceToSection} />
+      <button className="addSequenceButton" onClick={onAddSequenceToSection}>
+      new sequence
+      </button>
     </div>
   );
 }

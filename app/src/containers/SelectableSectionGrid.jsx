@@ -8,7 +8,8 @@ const mapStateToProps = (state) => ({
   sectionData:
     {
       existing: state.sections.map(section => section.id),
-      selected: state.editorData.selectedSections
+      selected: state.editorData.selectedSections,
+      sections: state.sections
     }
 });
 
