@@ -36,8 +36,8 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownprops) => ({
-  onIncrementClick: (sectionId, sequenceSlotIndex, sequenceId) => dispatch(incrementSequenceSlotId(sectionId, sequenceId, sequenceSlotIndex)),
-  onDecrementClick: (sectionId, sequenceSlotIndex, sequenceId) => dispatch(decrementSequenceSlotId(sectionId, sequenceId, sequenceSlotIndex)),
+  onIncrementClick: (sectionId, sequenceSlotIndex, sequenceId) => dispatch(incrementSequenceSlotId(sectionId, sequenceSlotIndex, sequenceId)),
+  onDecrementClick: (sectionId, sequenceSlotIndex, sequenceId) => dispatch(decrementSequenceSlotId(sectionId, sequenceSlotIndex, sequenceId)),
   onDeleteSequenceClick: (sequenceSlotIndex) => dispatch(deleteSequenceFromSection(sequenceSlotIndex))
 });
 

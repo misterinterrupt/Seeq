@@ -112,21 +112,21 @@ var addSelectSection = exports.addSelectSection = function addSelectSection(id) 
   };
 };
 
-var incrementSequenceSlotId = exports.incrementSequenceSlotId = function incrementSequenceSlotId(sectionId, sequenceId, slotIndex) {
+var incrementSequenceSlotId = exports.incrementSequenceSlotId = function incrementSequenceSlotId(sectionId, sequenceSlotIndex, sequenceId) {
   return {
     type: INCREMENT_SEQUENCE_SLOT_SEQUENCE,
     sectionId: sectionId,
     sequenceId: sequenceId,
-    slotIndex: slotIndex
+    sequenceSlotIndex: sequenceSlotIndex
   };
 };
 
-var decrementSequenceSlotId = exports.decrementSequenceSlotId = function decrementSequenceSlotId(sectionId, sequenceId, slotIndex) {
+var decrementSequenceSlotId = exports.decrementSequenceSlotId = function decrementSequenceSlotId(sectionId, sequenceSlotIndex, sequenceId) {
   return {
     type: DECREMENT_SEQUENCE_SLOT_SEQUENCE,
     sectionId: sectionId,
     sequenceId: sequenceId,
-    slotIndex: slotIndex
+    sequenceSlotIndex: sequenceSlotIndex
   };
 };
 
@@ -136,10 +136,10 @@ var addSequenceToSection = exports.addSequenceToSection = function addSequenceTo
   };
 };
 
-var deleteSequenceFromSection = exports.deleteSequenceFromSection = function deleteSequenceFromSection(slotIndex) {
+var deleteSequenceFromSection = exports.deleteSequenceFromSection = function deleteSequenceFromSection(sequenceSlotIndex) {
   return {
     type: DELETE_SEQUENCE_FROM_SECTION,
-    slotIndex: slotIndex
+    sequenceSlotIndex: sequenceSlotIndex
   };
 };
 
@@ -310,7 +310,7 @@ var SequenceSlotGrid = function SequenceSlotGrid(_ref) {
     sequenceSlots.push(_react2.default.createElement(_EditableSequenceSlot2.default, {
       sequenceSlotIndex: sequenceSlotIndex,
       key: sequenceSlotIndex,
-      sequenceId: sequence.Id,
+      sequenceId: sequence.id,
       sequenceLabel: sequence.label
     }));
   });
@@ -420,10 +420,10 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
 var mapDispatchToProps = function mapDispatchToProps(dispatch, ownprops) {
   return {
     onIncrementClick: function onIncrementClick(sectionId, sequenceSlotIndex, sequenceId) {
-      return dispatch((0, _actions.incrementSequenceSlotId)(sectionId, sequenceId, sequenceSlotIndex));
+      return dispatch((0, _actions.incrementSequenceSlotId)(sectionId, sequenceSlotIndex, sequenceId));
     },
     onDecrementClick: function onDecrementClick(sectionId, sequenceSlotIndex, sequenceId) {
-      return dispatch((0, _actions.decrementSequenceSlotId)(sectionId, sequenceId, sequenceSlotIndex));
+      return dispatch((0, _actions.decrementSequenceSlotId)(sectionId, sequenceSlotIndex, sequenceId));
     },
     onDeleteSequenceClick: function onDeleteSequenceClick(sequenceSlotIndex) {
       return dispatch((0, _actions.deleteSequenceFromSection)(sequenceSlotIndex));
@@ -469,6 +469,7 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
   });
   var sectionSequences = [];
   section.sequenceSlots.forEach(function (sequenceId) {
+    console.log(sequenceId);
     sectionSequences.push({
       id: sequenceId,
       label: state.sequences.find(function (sequence) {
@@ -669,8 +670,9 @@ var rootReducer = function rootReducer() {
     });
     var updatedSections = [].concat(_toConsumableArray(state.sections));
     updatedSections[updatedSectionIndex] = _extends({}, updatedSections[updatedSectionIndex], {
-      sequenceslots: [].concat(_toConsumableArray(updatedSections[updatedSectionIndex].sequenceSlots.splice(action.slotIndex, 1, nextSequenceId)))
+      sequenceSlots: [].concat(_toConsumableArray(updatedSections[updatedSectionIndex].sequenceSlots))
     });
+    updatedSections[updatedSectionIndex].sequenceSlots.splice(action.sequenceSlotIndex, 1, nextSequenceId);
     return _extends({}, state, {
       sections: sortById(updatedSections)
     });
@@ -704,8 +706,9 @@ var rootReducer = function rootReducer() {
       return section.id === state.editorData.selectedSections[0];
     });
     updatedSections[sectionIndex] = _extends({}, updatedSections[sectionIndex], {
-      sequenceSlots: [].concat(_toConsumableArray(updatedSections[sectionIndex].sequenceSlots.splice(action.slotIndex, 1)))
+      sequenceSlots: [].concat(_toConsumableArray(updatedSections[sectionIndex].sequenceSlots))
     });
+    updatedSections[sectionIndex].sequenceSlots.splice(action.sequenceSlotIndex, 1);
     return _extends({}, state, {
       sections: sortById(updatedSections)
     });
@@ -970,7 +973,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n:root {\n  --primary-color: #42b983; }\n\n* {\n  box-sizing: border-box;\n  text-size-adjust: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em;\n  overflow: hidden;\n  outline: none; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\n#root {\n  min-height: 100vh; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.sectionEditor {\n  width: 100%; }\n\n#sectionGrid {\n  margin: 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.sectionCell {\n  background-color: #1F1F1F;\n  color: #fff;\n  border: 2px dotted #EC0396;\n  border-radius: 4px;\n  padding: 0px;\n  width: 75px;\n  height: 50px; }\n  .sectionCell.sectionSelected {\n    border-width: 4px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n  .sectionCell.sectionExists {\n    background-color: #1D1D1D;\n    border-style: solid; }\n\n#sequenceSlotGrid {\n  margin: 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.addSequenceButton {\n  color: #00C7FF;\n  width: 75px;\n  height: 50px;\n  border: 2px solid #EC0396;\n  border-radius: 2px;\n  background-color: #2F2F2F;\n  outline: none; }\n\n.incrementableSequenceSlot {\n  padding: 0px;\n  width: 75px;\n  height: 50px;\n  border: 2px solid #EC0396;\n  border-radius: 2px;\n  padding-bottom: 0px;\n  display: flex;\n  flex-direction: column; }\n  .incrementableSequenceSlot .sequenceLabel {\n    flex-grow: 1; }\n  .incrementableSequenceSlot .sequenceEditButtons {\n    display: flex;\n    justify-content: flex-end; }\n    .incrementableSequenceSlot .sequenceEditButtons button {\n      color: #00C7FF;\n      background-color: #2F2F2F;\n      font-weight: 200;\n      width: 20px;\n      border: 1px solid #EC0396;\n      border-bottom: 0px;\n      margin-bottom: 0px; }\n", ""]);
+exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n:root {\n  --primary-color: #42b983; }\n\n* {\n  box-sizing: border-box;\n  text-size-adjust: none;\n  user-select: none;\n  outline: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em;\n  overflow: hidden;\n  outline: none; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\n#root {\n  min-height: 100vh; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.sectionEditor {\n  width: 100%; }\n\n#sectionGrid {\n  margin: 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.sectionCell {\n  background-color: #1F1F1F;\n  color: #fff;\n  border: 2px dotted #EC0396;\n  border-radius: 4px;\n  padding: 0px;\n  width: 75px;\n  height: 50px; }\n  .sectionCell.sectionSelected {\n    border-width: 4px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n  .sectionCell.sectionExists {\n    background-color: #1D1D1D;\n    border-style: solid; }\n\n#sequenceSlotGrid {\n  margin: 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.addSequenceButton {\n  color: #00C7FF;\n  width: 75px;\n  height: 50px;\n  border: 2px solid #EC0396;\n  border-radius: 2px;\n  background-color: #2F2F2F;\n  outline: none; }\n\n.incrementableSequenceSlot {\n  padding: 0px;\n  width: 75px;\n  height: 50px;\n  border: 2px solid #EC0396;\n  border-radius: 2px;\n  padding-bottom: 0px;\n  display: flex;\n  flex-direction: column; }\n  .incrementableSequenceSlot .sequenceLabel {\n    flex-grow: 1; }\n  .incrementableSequenceSlot .sequenceEditButtons {\n    display: flex;\n    justify-content: flex-end; }\n    .incrementableSequenceSlot .sequenceEditButtons button {\n      color: #00C7FF;\n      background-color: #2F2F2F;\n      font-weight: 200;\n      width: 20px;\n      border: 1px solid #EC0396;\n      border-bottom: 0px;\n      margin-bottom: 0px;\n      outline: none; }\n", ""]);
 
 // exports
 
