@@ -9,25 +9,25 @@ export const addSelectSection = (id) => ({
   id
 });
 
-export const incrementSequenceSlotId = (sectionId, sequenceId, slotIndex) => ({
+export const incrementSequenceSlotId = (sectionId, sequenceSlotIndex, sequenceId) => ({
   type: INCREMENT_SEQUENCE_SLOT_SEQUENCE,
   sectionId,
   sequenceId,
-  slotIndex
+  sequenceSlotIndex
 });
 
-export const decrementSequenceSlotId = (sectionId, sequenceId, slotIndex) => ({
+export const decrementSequenceSlotId = (sectionId, sequenceSlotIndex, sequenceId) => ({
   type: DECREMENT_SEQUENCE_SLOT_SEQUENCE,
   sectionId,
   sequenceId,
-  slotIndex
+  sequenceSlotIndex
 });
 
 export const addSequenceToSection = () => ({
   type: ADD_SEQUENCE_TO_SECTION
 });
 
-export const deleteSequenceFromSection = (slotIndex) => ({
+export const deleteSequenceFromSection = (sequenceSlotIndex) => ({
   type: DELETE_SEQUENCE_FROM_SECTION,
-  slotIndex
+  sequenceSlotIndex
 })

@@ -9,7 +9,7 @@ const SequenceSlotGrid = ({ sectionSequences, onAddSequenceToSection }) => {
       <EditableSequenceSlot
         sequenceSlotIndex={sequenceSlotIndex}
         key={sequenceSlotIndex}
-        sequenceId={sequence.Id}
+        sequenceId={sequence.id}
         sequenceLabel={sequence.label}
       />
     );

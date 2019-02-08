@@ -7,6 +7,8 @@
 *{
   box-sizing: border-box;
   text-size-adjust:none;
+  user-select: none;
+  outline: none;
 }
 
 html {
@@ -25,7 +27,6 @@ body{
 body.loading{
 	opacity: .5;
 	cursor:wait;
-
 	main, aside{
 		pointer-events:none;
 	}
@@ -112,7 +113,7 @@ td{
   height: 50px;
 
   .sectionLabel {
-    
+
   }
 
   &.sectionSelected {
@@ -171,6 +172,7 @@ td{
       border: 1px solid #EC0396;
       border-bottom: 0px;
       margin-bottom: 0px;
+      outline: none;
 
       &.incUp {
 

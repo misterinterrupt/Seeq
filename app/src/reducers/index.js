@@ -71,10 +71,11 @@ const rootReducer = (state={}, action) => {
     let updatedSections = [...state.sections];
     updatedSections[updatedSectionIndex] = {
       ...updatedSections[updatedSectionIndex],
-      sequenceslots: [
-        ...updatedSections[updatedSectionIndex].sequenceSlots.splice(action.slotIndex, 1, nextSequenceId)
+      sequenceSlots: [
+        ...updatedSections[updatedSectionIndex].sequenceSlots
       ]
     };
+    updatedSections[updatedSectionIndex].sequenceSlots.splice(action.sequenceSlotIndex, 1, nextSequenceId)
     return {
       ...state,
       sections: sortById(updatedSections)
@@ -111,8 +112,9 @@ const rootReducer = (state={}, action) => {
     });
     updatedSections[sectionIndex] = {
       ...updatedSections[sectionIndex],
-      sequenceSlots: [...updatedSections[sectionIndex].sequenceSlots.splice(action.slotIndex, 1)]
+      sequenceSlots: [...updatedSections[sectionIndex].sequenceSlots]
     }
+    updatedSections[sectionIndex].sequenceSlots.splice(action.sequenceSlotIndex, 1)
     return {
       ...state,
       sections: sortById(updatedSections)
