@@ -100,6 +100,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var ADD_SELECT_SECTION = exports.ADD_SELECT_SECTION = 'ADD_SELECT_SECTION';
+var SELECT_SEQUENCE_SLOT = exports.SELECT_SEQUENCE_SLOT = 'SELECT_SEQUENCE_SLOT';
 var INCREMENT_SEQUENCE_SLOT_SEQUENCE = exports.INCREMENT_SEQUENCE_SLOT_SEQUENCE = 'INCREMENT_SEQUENCE_SLOT_SEQUENCE';
 var DECREMENT_SEQUENCE_SLOT_SEQUENCE = exports.DECREMENT_SEQUENCE_SLOT_SEQUENCE = 'DECREMENT_SEQUENCE_SLOT_SEQUENCE';
 var ADD_SEQUENCE_TO_SECTION = exports.ADD_SEQUENCE_TO_SECTION = 'ADD_SEQUENCE_TO_SECTION';
@@ -109,6 +110,13 @@ var addSelectSection = exports.addSelectSection = function addSelectSection(id) 
   return {
     type: ADD_SELECT_SECTION,
     id: id
+  };
+};
+
+var selectSequenceSlot = exports.selectSequenceSlot = function selectSequenceSlot(sequenceSlotIndex) {
+  return {
+    type: SELECT_SEQUENCE_SLOT,
+    sequenceSlotIndex: sequenceSlotIndex
   };
 };
 
@@ -311,18 +319,19 @@ var SequenceSlotGrid = function SequenceSlotGrid(_ref) {
       sequenceSlotIndex: sequenceSlotIndex,
       key: sequenceSlotIndex,
       sequenceId: sequence.id,
-      sequenceLabel: sequence.label
+      sequenceLabel: sequence.label,
+      sequenceSelected: sequence.sequenceSelected
     }));
   });
   return _react2.default.createElement(
     'div',
     { id: 'sequenceSlotGrid' },
-    sequenceSlots,
     _react2.default.createElement(
       'button',
       { className: 'addSequenceButton', onClick: onAddSequenceToSection },
       'new sequence'
-    )
+    ),
+    sequenceSlots
   );
 };
 
@@ -350,21 +359,36 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
 var _actions = __webpack_require__(/*! ../actions */ "./app/src/actions/index.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var EditableSequenceSlot = function EditableSequenceSlot(_ref) {
-  var onDecrementClick = _ref.onDecrementClick,
+  var onSelectSequenceSlot = _ref.onSelectSequenceSlot,
+      onDecrementClick = _ref.onDecrementClick,
       onIncrementClick = _ref.onIncrementClick,
       onDeleteSequenceClick = _ref.onDeleteSequenceClick,
       sectionId = _ref.sectionId,
       sequenceSlotIndex = _ref.sequenceSlotIndex,
       sequenceId = _ref.sequenceId,
-      sequenceLabel = _ref.sequenceLabel;
+      sequenceLabel = _ref.sequenceLabel,
+      sequenceSelected = _ref.sequenceSelected;
   return _react2.default.createElement(
     'div',
-    { key: sequenceSlotIndex, className: 'incrementableSequenceSlot' },
+    {
+      key: sequenceSlotIndex,
+      className: (0, _classnames2.default)({
+        'incrementableSequenceSlot': true,
+        'sequenceSelected': sequenceSelected
+      }),
+      onClick: function onClick() {
+        return onSelectSequenceSlot(sequenceSlotIndex, sequenceId);
+      }
+    },
     _react2.default.createElement(
       'div',
       { className: 'sequenceLabel' },
@@ -399,8 +423,8 @@ var EditableSequenceSlot = function EditableSequenceSlot(_ref) {
         'button',
         {
           className: 'deleteSequence',
-          onClick: function onClick() {
-            return onDeleteSequenceClick(sequenceSlotIndex);
+          onClick: function onClick(e) {
+            return onDeleteSequenceClick(e, sequenceSlotIndex);
           } },
         'x'
       )
@@ -413,20 +437,25 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
     sectionId: state.editorData.selectedSections[0],
     sequenceSlotIndex: ownProps.sequenceSlotIndex,
     sequenceId: ownProps.sequenceId,
-    sequenceLabel: ownProps.sequenceLabel
+    sequenceLabel: ownProps.sequenceLabel,
+    sequenceSelected: ownProps.sequenceSelected
   };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch, ownprops) {
   return {
+    onSelectSequenceSlot: function onSelectSequenceSlot(sequenceSlotIndex) {
+      return dispatch((0, _actions.selectSequenceSlot)(sequenceSlotIndex));
+    },
     onIncrementClick: function onIncrementClick(sectionId, sequenceSlotIndex, sequenceId) {
       return dispatch((0, _actions.incrementSequenceSlotId)(sectionId, sequenceSlotIndex, sequenceId));
     },
     onDecrementClick: function onDecrementClick(sectionId, sequenceSlotIndex, sequenceId) {
       return dispatch((0, _actions.decrementSequenceSlotId)(sectionId, sequenceSlotIndex, sequenceId));
     },
-    onDeleteSequenceClick: function onDeleteSequenceClick(sequenceSlotIndex) {
-      return dispatch((0, _actions.deleteSequenceFromSection)(sequenceSlotIndex));
+    onDeleteSequenceClick: function onDeleteSequenceClick(e, sequenceSlotIndex) {
+      e.stopPropagation();
+      dispatch((0, _actions.deleteSequenceFromSection)(sequenceSlotIndex));
     }
   };
 };
@@ -467,14 +496,17 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
   var section = state.sections.find(function (section) {
     return section.id === state.editorData.selectedSections[0];
   });
+  var selectedSequenceSlot = section.selectedSequenceSlot[0];
   var sectionSequences = [];
-  section.sequenceSlots.forEach(function (sequenceId) {
-    console.log(sequenceId);
+  section.sequenceSlots.forEach(function (sequenceId, sequenceSlotIndex) {
+    console.log('sequenceSlotIndex', sequenceSlotIndex);
+    console.log('selectedSequenceSlot', selectedSequenceSlot);
     sectionSequences.push({
       id: sequenceId,
       label: state.sequences.find(function (sequence) {
         return sequence.id === sequenceId;
-      }).label
+      }).label,
+      sequenceSelected: sequenceSlotIndex === selectedSequenceSlot
     });
   });
   return {
@@ -625,6 +657,12 @@ var rootReducer = function rootReducer() {
     return sortedList[nextItemIndex].id;
   };
 
+  var determineSelectedSectionIndex = function determineSelectedSectionIndex(state) {
+    return state.sections.findIndex(function (section) {
+      return section.id === state.editorData.selectedSections[0];
+    });
+  };
+
   var addSelectSection = function addSelectSection() {
     var newSection = [];
     var sectionExists = state.sections.filter(function (section) {
@@ -634,7 +672,7 @@ var rootReducer = function rootReducer() {
       newSection = [{
         id: action.id,
         label: "section " + action.id.toString(),
-        selectedSequenceSlot: 0,
+        selectedSequenceSlot: [0],
         sequenceSlots: []
       }];
     }
@@ -644,6 +682,17 @@ var rootReducer = function rootReducer() {
         selectedSections: [action.id]
       },
       sections: sortById(newSection.concat(state.sections))
+    });
+  };
+
+  var selectSequenceSlot = function selectSequenceSlot(state, action) {
+    var updatedSectionIndex = determineSelectedSectionIndex(state);
+    var updatedSections = [].concat(_toConsumableArray(state.sections));
+    updatedSections[updatedSectionIndex] = _extends({}, updatedSections[updatedSectionIndex], {
+      selectedSequenceSlot: [action.sequenceSlotIndex]
+    });
+    return _extends({}, state, {
+      sections: sortById(updatedSections)
     });
   };
 
@@ -686,9 +735,10 @@ var rootReducer = function rootReducer() {
     var sectionIndex = updatedSections.findIndex(function (section) {
       return section.id === state.editorData.selectedSections[0];
     });
-    var newSequenceId = state.sequences.length + 0;
+    var newSequenceId = state.sequences.length;
     updatedSections[sectionIndex].sequenceSlots.push(newSequenceId);
-    // add new sequence
+    // now select the new sequence, always at the end of the list
+    updatedSections[sectionIndex].selectedSequenceSlot = [updatedSections[sectionIndex].sequenceSlots.length - 1];
     var updatedSequences = [].concat(_toConsumableArray(state.sequences), [{
       id: newSequenceId,
       label: "seq " + newSequenceId,
@@ -707,7 +757,12 @@ var rootReducer = function rootReducer() {
     });
     updatedSections[sectionIndex] = _extends({}, updatedSections[sectionIndex], {
       sequenceSlots: [].concat(_toConsumableArray(updatedSections[sectionIndex].sequenceSlots))
-    });
+      // maintain the selected slot index unless that slot disappears
+    });var newlySelectedSlot = updatedSections[sectionIndex].selectedSequenceSlot[0];
+    if (action.sequenceSlotIndex < updatedSections[sectionIndex].selectedSequenceSlot[0] || action.sequenceSlotIndex === updatedSections[sectionIndex].sequenceSlots.length - 1) {
+      newlySelectedSlot = updatedSections[sectionIndex].selectedSequenceSlot[0] - 1;
+    }
+    updatedSections[sectionIndex].selectedSequenceSlot = [newlySelectedSlot];
     updatedSections[sectionIndex].sequenceSlots.splice(action.sequenceSlotIndex, 1);
     return _extends({}, state, {
       sections: sortById(updatedSections)
@@ -717,6 +772,9 @@ var rootReducer = function rootReducer() {
   switch (action.type) {
     case _actions.ADD_SELECT_SECTION:
       return addSelectSection(state, action);
+
+    case _actions.SELECT_SEQUENCE_SLOT:
+      return selectSequenceSlot(state, action);
 
     case _actions.INCREMENT_SEQUENCE_SLOT_SEQUENCE:
       return incrementSequenceSlotId(state, action);
@@ -777,12 +835,13 @@ var logger = (0, _reduxLogger.createLogger)();
 
 var initialState = {
   editorData: {
-    selectedSections: [0]
+    selectedSections: [0],
+    selectedSequences: [0]
   },
   sections: [{
     id: 0,
     label: "section 0",
-    selectedSequenceSlot: 0,
+    selectedSequenceSlot: [0],
     sequenceSlots: [0]
   }],
   sequences: [{
@@ -973,7 +1032,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n:root {\n  --primary-color: #42b983; }\n\n* {\n  box-sizing: border-box;\n  text-size-adjust: none;\n  user-select: none;\n  outline: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em;\n  overflow: hidden;\n  outline: none; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\n#root {\n  min-height: 100vh; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.sectionEditor {\n  width: 100%; }\n\n#sectionGrid {\n  margin: 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.sectionCell {\n  background-color: #1F1F1F;\n  color: #fff;\n  border: 2px dotted #EC0396;\n  border-radius: 4px;\n  padding: 0px;\n  width: 75px;\n  height: 50px; }\n  .sectionCell.sectionSelected {\n    border-width: 4px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n  .sectionCell.sectionExists {\n    background-color: #1D1D1D;\n    border-style: solid; }\n\n#sequenceSlotGrid {\n  margin: 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.addSequenceButton {\n  color: #00C7FF;\n  width: 75px;\n  height: 50px;\n  border: 2px solid #EC0396;\n  border-radius: 2px;\n  background-color: #2F2F2F;\n  outline: none; }\n\n.incrementableSequenceSlot {\n  padding: 0px;\n  width: 75px;\n  height: 50px;\n  border: 2px solid #EC0396;\n  border-radius: 2px;\n  padding-bottom: 0px;\n  display: flex;\n  flex-direction: column; }\n  .incrementableSequenceSlot .sequenceLabel {\n    flex-grow: 1; }\n  .incrementableSequenceSlot .sequenceEditButtons {\n    display: flex;\n    justify-content: flex-end; }\n    .incrementableSequenceSlot .sequenceEditButtons button {\n      color: #00C7FF;\n      background-color: #2F2F2F;\n      font-weight: 200;\n      width: 20px;\n      border: 1px solid #EC0396;\n      border-bottom: 0px;\n      margin-bottom: 0px;\n      outline: none; }\n", ""]);
+exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n:root {\n  --primary-color: #42b983; }\n\n* {\n  box-sizing: border-box;\n  text-size-adjust: none;\n  user-select: none;\n  outline: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em;\n  overflow: hidden;\n  outline: none; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\n#root {\n  min-height: 100vh; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.sectionEditor {\n  width: 100%; }\n\n#sectionGrid {\n  margin: 0.5vw 2vw;\n  margin-bottom: 1vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.sectionCell {\n  background-color: #1F1F1F;\n  color: #fff;\n  border: 2px dotted #EC0396;\n  border-radius: 4px;\n  padding: 0px;\n  width: 75px;\n  height: 50px; }\n  .sectionCell.sectionSelected {\n    border-width: 2px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n  .sectionCell.sectionExists {\n    background-color: #1D1D1D;\n    border-style: solid; }\n\n#sequenceSlotGrid {\n  margin: 0.5vw 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.addSequenceButton {\n  color: #00C7FF;\n  width: 75px;\n  height: 50px;\n  border: 2px dotted #EC0396;\n  border-radius: 2px;\n  background-color: #1F1F1F;\n  outline: none; }\n\n.incrementableSequenceSlot {\n  padding: 0px;\n  width: 75px;\n  height: 50px;\n  border: 2px solid #EC0396;\n  border-radius: 2px;\n  padding-bottom: 0px;\n  display: flex;\n  flex-direction: column; }\n  .incrementableSequenceSlot .sequenceLabel {\n    padding: 2px;\n    flex-grow: 1; }\n  .incrementableSequenceSlot.sequenceSelected {\n    border-width: 2px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n    .incrementableSequenceSlot.sequenceSelected .sequenceEditButtons button {\n      color: #00C7FF;\n      border-color: #00C7FF; }\n  .incrementableSequenceSlot .sequenceEditButtons {\n    display: flex;\n    justify-content: flex-end; }\n    .incrementableSequenceSlot .sequenceEditButtons button {\n      color: #00C7FF;\n      font-size: 11pt;\n      background-color: #000;\n      font-weight: 200;\n      width: 20px;\n      border: 1px solid #EC0396;\n      border-bottom: 0px;\n      border-right: 0px;\n      margin-bottom: 0px;\n      outline: none; }\n", ""]);
 
 // exports
 

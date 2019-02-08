@@ -96,7 +96,8 @@ td{
 }
 
 #sectionGrid {
-  margin: 2vw;
+  margin: 0.5vw 2vw;
+  margin-bottom: 1vw;
   width: 100%;
   display: grid;
   grid-gap: 5px;
@@ -117,7 +118,7 @@ td{
   }
 
   &.sectionSelected {
-    border-width: 4px;
+    border-width: 2px;
     border-top-right-radius: 0px;
     border-color: #00C7FF;
   }
@@ -129,7 +130,7 @@ td{
 }
 
 #sequenceSlotGrid {
-  margin: 2vw;
+  margin: 0.5vw 2vw;
   width: 100%;
   display: grid;
   grid-gap: 5px;
@@ -140,9 +141,9 @@ td{
   color: #00C7FF;
   width: 75px;
   height: 50px;
-  border: 2px solid #EC0396;
+  border: 2px dotted #EC0396;
   border-radius: 2px;
-  background-color: #2F2F2F;
+  background-color: #1F1F1F;
   outline: none;
 }
 
@@ -157,7 +158,20 @@ td{
   flex-direction: column;
 
   .sequenceLabel {
+    padding: 2px;
     flex-grow: 1;
+  }
+
+  &.sequenceSelected {
+    border-width: 2px;
+    border-top-right-radius: 0px;
+    border-color: #00C7FF;
+    .sequenceEditButtons {
+      button {
+        color: #00C7FF;
+        border-color: #00C7FF;
+      }
+    }
   }
 
   .sequenceEditButtons {
@@ -166,11 +180,13 @@ td{
 
     button {
       color: #00C7FF;
-      background-color: #2F2F2F;
+      font-size: 11pt;
+      background-color: #000;
       font-weight: 200;
       width:20px;
       border: 1px solid #EC0396;
       border-bottom: 0px;
+      border-right: 0px;
       margin-bottom: 0px;
       outline: none;
 

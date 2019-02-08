@@ -11,15 +11,16 @@ const SequenceSlotGrid = ({ sectionSequences, onAddSequenceToSection }) => {
         key={sequenceSlotIndex}
         sequenceId={sequence.id}
         sequenceLabel={sequence.label}
+        sequenceSelected={sequence.sequenceSelected}
       />
     );
   });
   return (
     <div id='sequenceSlotGrid'>
+    <button className="addSequenceButton" onClick={onAddSequenceToSection}>
+    new sequence
+    </button>
       {sequenceSlots}
-      <button className="addSequenceButton" onClick={onAddSequenceToSection}>
-      new sequence
-      </button>
     </div>
   );
 }

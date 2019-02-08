@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 
 import {
   ADD_SELECT_SECTION,
+  SELECT_SEQUENCE_SLOT,
   INCREMENT_SEQUENCE_SLOT_SEQUENCE,
   DECREMENT_SEQUENCE_SLOT_SEQUENCE,
   ADD_SEQUENCE_TO_SECTION,
@@ -30,6 +31,12 @@ const rootReducer = (state={}, action) => {
     return sortedList[nextItemIndex].id;
   }
 
+  let determineSelectedSectionIndex = (state) => {
+    return state.sections.findIndex(section => {
+      return section.id === state.editorData.selectedSections[0];
+    });
+  }
+
   const addSelectSection = () => {
     let newSection = [];
     let sectionExists = state.sections.filter(section => section.id === action.id).length === 1;
@@ -37,7 +44,7 @@ const rootReducer = (state={}, action) => {
       newSection = [{
         id: action.id,
         label: "section " + action.id.toString(),
-        selectedSequenceSlot: 0,
+        selectedSequenceSlot: [0],
         sequenceSlots: []
       }];
     }
@@ -50,6 +57,19 @@ const rootReducer = (state={}, action) => {
       sections: sortById(newSection.concat(state.sections))
     };
   };
+
+  const selectSequenceSlot = (state, action) => {
+    let updatedSectionIndex = determineSelectedSectionIndex(state);
+    let updatedSections = [...state.sections];
+    updatedSections[updatedSectionIndex] = {
+      ...updatedSections[updatedSectionIndex],
+      selectedSequenceSlot: [action.sequenceSlotIndex]
+    }
+    return {
+      ...state,
+      sections: sortById(updatedSections)
+    };
+  }
 
   const incrementSequenceSlotId = (state, action) => {
     let nextSequenceId = determineNextId(state.sequences, action.sequenceId, "UP");
@@ -85,11 +105,12 @@ const rootReducer = (state={}, action) => {
   const addSequenceToSection = (state={}, action) => {
     let updatedSections = [...state.sections];
     let sectionIndex = updatedSections.findIndex(section => {
-      return section.id === state.editorData.selectedSections[0]
+      return section.id === state.editorData.selectedSections[0];
     });
-    let newSequenceId = state.sequences.length + 0;
+    let newSequenceId = state.sequences.length;
     updatedSections[sectionIndex].sequenceSlots.push(newSequenceId);
-    // add new sequence
+    // now select the new sequence, always at the end of the list
+    updatedSections[sectionIndex].selectedSequenceSlot = [updatedSections[sectionIndex].sequenceSlots.length-1]
     let updatedSequences = [
       ...state.sequences,
       {
@@ -114,6 +135,13 @@ const rootReducer = (state={}, action) => {
       ...updatedSections[sectionIndex],
       sequenceSlots: [...updatedSections[sectionIndex].sequenceSlots]
     }
+    // maintain the selected slot index unless that slot disappears
+    let newlySelectedSlot = updatedSections[sectionIndex].selectedSequenceSlot[0];
+    if(action.sequenceSlotIndex < updatedSections[sectionIndex].selectedSequenceSlot[0]
+      || action.sequenceSlotIndex === updatedSections[sectionIndex].sequenceSlots.length - 1) {
+      newlySelectedSlot = updatedSections[sectionIndex].selectedSequenceSlot[0] - 1;
+    }
+    updatedSections[sectionIndex].selectedSequenceSlot = [newlySelectedSlot]
     updatedSections[sectionIndex].sequenceSlots.splice(action.sequenceSlotIndex, 1)
     return {
       ...state,
@@ -124,6 +152,9 @@ const rootReducer = (state={}, action) => {
   switch (action.type) {
     case ADD_SELECT_SECTION:
       return addSelectSection(state, action);
+
+    case SELECT_SEQUENCE_SLOT:
+      return selectSequenceSlot(state, action);
 
     case INCREMENT_SEQUENCE_SLOT_SEQUENCE:
       return incrementSequenceSlotId(state, action);
