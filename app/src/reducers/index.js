@@ -138,7 +138,7 @@ const rootReducer = (state={}, action) => {
     // maintain the selected slot index unless that slot disappears
     let newlySelectedSlot = updatedSections[sectionIndex].selectedSequenceSlot[0];
     if(action.sequenceSlotIndex < updatedSections[sectionIndex].selectedSequenceSlot[0]
-      || action.sequenceSlotIndex === updatedSections[sectionIndex].sequenceSlots.length - 1) {
+      || updatedSections[sectionIndex].selectedSequenceSlot[0] === updatedSections[sectionIndex].sequenceSlots.length - 1) {
       newlySelectedSlot = updatedSections[sectionIndex].selectedSequenceSlot[0] - 1;
     }
     updatedSections[sectionIndex].selectedSequenceSlot = [newlySelectedSlot]
