@@ -499,8 +499,6 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
   var selectedSequenceSlot = section.selectedSequenceSlot[0];
   var sectionSequences = [];
   section.sequenceSlots.forEach(function (sequenceId, sequenceSlotIndex) {
-    console.log('sequenceSlotIndex', sequenceSlotIndex);
-    console.log('selectedSequenceSlot', selectedSequenceSlot);
     sectionSequences.push({
       id: sequenceId,
       label: state.sequences.find(function (sequence) {
@@ -759,7 +757,7 @@ var rootReducer = function rootReducer() {
       sequenceSlots: [].concat(_toConsumableArray(updatedSections[sectionIndex].sequenceSlots))
       // maintain the selected slot index unless that slot disappears
     });var newlySelectedSlot = updatedSections[sectionIndex].selectedSequenceSlot[0];
-    if (action.sequenceSlotIndex < updatedSections[sectionIndex].selectedSequenceSlot[0] || action.sequenceSlotIndex === updatedSections[sectionIndex].sequenceSlots.length - 1) {
+    if (action.sequenceSlotIndex < updatedSections[sectionIndex].selectedSequenceSlot[0] || updatedSections[sectionIndex].selectedSequenceSlot[0] === updatedSections[sectionIndex].sequenceSlots.length - 1) {
       newlySelectedSlot = updatedSections[sectionIndex].selectedSequenceSlot[0] - 1;
     }
     updatedSections[sectionIndex].selectedSequenceSlot = [newlySelectedSlot];
