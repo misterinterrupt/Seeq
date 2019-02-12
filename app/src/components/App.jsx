@@ -1,8 +1,8 @@
 import React from 'react';
 
-import SelectableSectionGrid from "../containers/SelectableSectionGrid";
-import ExpandableSequenceSlotGrid from "../containers/ExpandableSequenceSlotGrid";
-
+import SelectableSectionGrid from '../containers/SelectableSectionGrid';
+import ExpandableSequenceSlotGrid from '../containers/ExpandableSequenceSlotGrid';
+import DynamicNoteGrid from '../containers/DynamicNoteGrid';
 
 const App = () => (
   <div id="sectionEditor">
@@ -11,6 +11,8 @@ const App = () => (
     <div className="sectionInfo" />
     <p>sequence slots</p>
     <ExpandableSequenceSlotGrid />
+    <p>note editor</p>
+    <DynamicNoteGrid />
   </div>
 );
 

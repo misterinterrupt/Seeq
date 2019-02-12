@@ -105,6 +105,7 @@ var INCREMENT_SEQUENCE_SLOT_SEQUENCE = exports.INCREMENT_SEQUENCE_SLOT_SEQUENCE 
 var DECREMENT_SEQUENCE_SLOT_SEQUENCE = exports.DECREMENT_SEQUENCE_SLOT_SEQUENCE = 'DECREMENT_SEQUENCE_SLOT_SEQUENCE';
 var ADD_SEQUENCE_TO_SECTION = exports.ADD_SEQUENCE_TO_SECTION = 'ADD_SEQUENCE_TO_SECTION';
 var DELETE_SEQUENCE_FROM_SECTION = exports.DELETE_SEQUENCE_FROM_SECTION = 'DELETE_SEQUENCE_FROM_SECTION';
+var ADD_NOTE_TO_SEQUENCE = exports.ADD_NOTE_TO_SEQUENCE = 'ADD_NOTE_TO_SEQUENCE';
 
 var addSelectSection = exports.addSelectSection = function addSelectSection(id) {
   return {
@@ -151,6 +152,13 @@ var deleteSequenceFromSection = exports.deleteSequenceFromSection = function del
   };
 };
 
+var addNoteToSequence = exports.addNoteToSequence = function addNoteToSequence(notePosition) {
+  return {
+    type: 'ADD_NOTE_TO_SEQUENCE',
+    notePosition: notePosition
+  };
+};
+
 /***/ }),
 
 /***/ "./app/src/components/App.jsx":
@@ -179,29 +187,113 @@ var _ExpandableSequenceSlotGrid = __webpack_require__(/*! ../containers/Expandab
 
 var _ExpandableSequenceSlotGrid2 = _interopRequireDefault(_ExpandableSequenceSlotGrid);
 
+var _DynamicNoteGrid = __webpack_require__(/*! ../containers/DynamicNoteGrid */ "./app/src/containers/DynamicNoteGrid.jsx");
+
+var _DynamicNoteGrid2 = _interopRequireDefault(_DynamicNoteGrid);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App() {
   return _react2.default.createElement(
-    "div",
-    { id: "sectionEditor" },
+    'div',
+    { id: 'sectionEditor' },
     _react2.default.createElement(
-      "p",
+      'p',
       null,
-      "sections"
+      'sections'
     ),
     _react2.default.createElement(_SelectableSectionGrid2.default, null),
-    _react2.default.createElement("div", { className: "sectionInfo" }),
+    _react2.default.createElement('div', { className: 'sectionInfo' }),
     _react2.default.createElement(
-      "p",
+      'p',
       null,
-      "sequence slots"
+      'sequence slots'
     ),
-    _react2.default.createElement(_ExpandableSequenceSlotGrid2.default, null)
+    _react2.default.createElement(_ExpandableSequenceSlotGrid2.default, null),
+    _react2.default.createElement(
+      'p',
+      null,
+      'note editor'
+    ),
+    _react2.default.createElement(_DynamicNoteGrid2.default, null)
   );
 };
 
 exports.default = App;
+
+/***/ }),
+
+/***/ "./app/src/components/NoteGrid.jsx":
+/*!*****************************************!*\
+  !*** ./app/src/components/NoteGrid.jsx ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+var _classnames = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var NoteGrid = function NoteGrid(_ref) {
+  var showingSequence = _ref.showingSequence,
+      onNoteCellClick = _ref.onNoteCellClick;
+
+
+  var gridLength = 16;
+  var noteCells = [];
+
+  if (showingSequence) {
+    var _loop = function _loop(noteIndex) {
+      var showNote = showingSequence.noteData[noteIndex][0] > -1;
+      noteCells.push(_react2.default.createElement('div', { className: (0, _classnames2.default)({
+          noteCell: true,
+          noteExists: showNote
+        }),
+        key: noteIndex,
+        onClick: function onClick() {
+          return onNoteCellClick(noteIndex);
+        }
+      }));
+    };
+
+    for (var noteIndex = 0; noteIndex < gridLength; noteIndex++) {
+      _loop(noteIndex);
+    }
+  } else {
+    return _react2.default.createElement(
+      'div',
+      { className: 'messageBox' },
+      _react2.default.createElement(
+        'p',
+        { className: 'messageText' },
+        'Create a New Sequence'
+      )
+    );
+  }
+
+  return _react2.default.createElement(
+    'div',
+    { id: 'noteGrid' },
+    noteCells
+  );
+};
+
+exports.default = NoteGrid;
 
 /***/ }),
 
@@ -336,6 +428,56 @@ var SequenceSlotGrid = function SequenceSlotGrid(_ref) {
 };
 
 exports.default = SequenceSlotGrid;
+
+/***/ }),
+
+/***/ "./app/src/containers/DynamicNoteGrid.jsx":
+/*!************************************************!*\
+  !*** ./app/src/containers/DynamicNoteGrid.jsx ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+var _actions = __webpack_require__(/*! ../actions */ "./app/src/actions/index.js");
+
+var _NoteGrid = __webpack_require__(/*! ../components/NoteGrid */ "./app/src/components/NoteGrid.jsx");
+
+var _NoteGrid2 = _interopRequireDefault(_NoteGrid);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+  var showingSequenceIndex = state.sections[state.editorData.selectedSections[0]].selectedSequenceSlot[0];
+  var showingSequenceId = state.sections[state.editorData.selectedSections[0]].sequenceSlots[showingSequenceIndex];
+  return {
+    showingSequence: state.sequences.find(function (sequence) {
+      return sequence.id === showingSequenceId;
+    })
+  };
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
+  return {
+    onNoteCellClick: function onNoteCellClick(notePosition) {
+      return dispatch((0, _actions.addNoteToSequence)(notePosition));
+    }
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_NoteGrid2.default);
 
 /***/ }),
 
@@ -639,9 +781,9 @@ var rootReducer = function rootReducer() {
     });
   };
 
-  var determineNextId = function determineNextId(listOfObjectsWithIds, currentId, direction) {
+  var determineSequentialId = function determineSequentialId(listOfObjectsWithIds, currentId, direction) {
     var sortedList = sortById(listOfObjectsWithIds);
-    var modifier = direction == "UP" ? 1 : -1;
+    var modifier = direction == "NEXT" ? 1 : -1;
     var nextId = void 0;
     var currentItemIndex = sortedList.findIndex(function (item) {
       return item.id === currentId;
@@ -695,12 +837,12 @@ var rootReducer = function rootReducer() {
   };
 
   var incrementSequenceSlotId = function incrementSequenceSlotId(state, action) {
-    var nextSequenceId = determineNextId(state.sequences, action.sequenceId, "UP");
+    var nextSequenceId = determineSequentialId(state.sequences, action.sequenceId, "NEXT");
     return updateSequenceSlotId(state, action, nextSequenceId);
   };
 
   var decrementSequenceSlotId = function decrementSequenceSlotId(state, action) {
-    var previousSequenceId = determineNextId(state.sequences, action.sequenceId, "Down");
+    var previousSequenceId = determineSequentialId(state.sequences, action.sequenceId, "PREVIOUS");
     return updateSequenceSlotId(state, action, previousSequenceId);
   };
 
@@ -740,7 +882,9 @@ var rootReducer = function rootReducer() {
     var updatedSequences = [].concat(_toConsumableArray(state.sequences), [{
       id: newSequenceId,
       label: "seq " + newSequenceId,
-      noteData: []
+      noteData: Array(16).fill(0).map(function (x) {
+        return [];
+      })
     }]);
     return _extends({}, state, {
       sections: sortById(updatedSections),
@@ -767,6 +911,35 @@ var rootReducer = function rootReducer() {
     });
   };
 
+  var addNoteToSequence = function addNoteToSequence(state, action) {
+    var updatedNotes = [].concat(_toConsumableArray(state.notes));
+    var newNoteId = updatedNotes.length;
+    var newNote = {
+      id: newNoteId,
+      pitch: 'C3',
+      velocity: 100
+    };
+    updatedNotes.push(newNote);
+    // TODO:: factor these array accesses into nested functions for readability
+
+    var selectedSequenceSlotIndex = state.sections[state.editorData.selectedSections[0]].selectedSequenceSlot[0];
+    var selectedSequenceId = state.sections[state.editorData.selectedSections[0]].sequenceSlots[selectedSequenceSlotIndex];
+    console.log(selectedSequenceId);
+    var updatedSequences = [].concat(_toConsumableArray(state.sequences));
+    var updatedSequenceIndex = updatedSequences.findIndex(function (sequence) {
+      return sequence.id === selectedSequenceId;
+    });
+    var updatedSequence = _extends({}, updatedSequences[updatedSequenceIndex], {
+      noteData: [].concat(_toConsumableArray(updatedSequences[updatedSequenceIndex].noteData))
+    });
+    updatedSequence.noteData[action.notePosition].push(newNoteId);
+    updatedSequences[updatedSequenceIndex] = updatedSequence;
+    return _extends({}, state, {
+      sequences: updatedSequences,
+      notes: updatedNotes
+    });
+  };
+
   switch (action.type) {
     case _actions.ADD_SELECT_SECTION:
       return addSelectSection(state, action);
@@ -785,6 +958,9 @@ var rootReducer = function rootReducer() {
 
     case _actions.DELETE_SEQUENCE_FROM_SECTION:
       return deleteSequenceFromSection(state, action);
+
+    case _actions.ADD_NOTE_TO_SEQUENCE:
+      return addNoteToSequence(state, action);
 
     default:
       return _extends({}, state);
@@ -845,11 +1021,14 @@ var initialState = {
   sequences: [{
     id: 0,
     label: "seq 0",
-    noteData: []
-  }]
+    noteData: Array(16).fill(0).map(function (x) {
+      return [];
+    })
+  }],
+  notes: []
 };
 
-var store = (0, _redux.createStore)(_reducers2.default, initialState, (0, _redux.applyMiddleware)(logger));
+var store = (0, _redux.createStore)(_reducers2.default, initialState, (0, _redux.compose)((0, _redux.applyMiddleware)(logger), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));
 
 var rootElement = document.getElementById('root');
 
@@ -1030,7 +1209,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n:root {\n  --primary-color: #42b983; }\n\n* {\n  box-sizing: border-box;\n  text-size-adjust: none;\n  user-select: none;\n  outline: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em;\n  overflow: hidden;\n  outline: none; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\n#root {\n  min-height: 100vh; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.sectionEditor {\n  width: 100%; }\n\n#sectionGrid {\n  margin: 0.5vw 2vw;\n  margin-bottom: 1vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.sectionCell {\n  background-color: #1F1F1F;\n  color: #fff;\n  border: 2px dotted #EC0396;\n  border-radius: 4px;\n  padding: 0px;\n  width: 75px;\n  height: 50px; }\n  .sectionCell.sectionSelected {\n    border-width: 2px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n  .sectionCell.sectionExists {\n    background-color: #1D1D1D;\n    border-style: solid; }\n\n#sequenceSlotGrid {\n  margin: 0.5vw 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.addSequenceButton {\n  color: #00C7FF;\n  width: 75px;\n  height: 50px;\n  border: 2px dotted #EC0396;\n  border-radius: 2px;\n  background-color: #1F1F1F;\n  outline: none; }\n\n.incrementableSequenceSlot {\n  padding: 0px;\n  width: 75px;\n  height: 50px;\n  border: 2px solid #EC0396;\n  border-radius: 2px;\n  padding-bottom: 0px;\n  display: flex;\n  flex-direction: column; }\n  .incrementableSequenceSlot .sequenceLabel {\n    padding: 2px;\n    flex-grow: 1; }\n  .incrementableSequenceSlot.sequenceSelected {\n    border-width: 2px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n    .incrementableSequenceSlot.sequenceSelected .sequenceEditButtons button {\n      color: #00C7FF;\n      border-color: #00C7FF; }\n  .incrementableSequenceSlot .sequenceEditButtons {\n    display: flex;\n    justify-content: flex-end; }\n    .incrementableSequenceSlot .sequenceEditButtons button {\n      color: #00C7FF;\n      font-size: 11pt;\n      background-color: #000;\n      font-weight: 200;\n      width: 20px;\n      border: 1px solid #EC0396;\n      border-bottom: 0px;\n      border-right: 0px;\n      margin-bottom: 0px;\n      outline: none; }\n", ""]);
+exports.push([module.i, "html, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n:root {\n  --primary-color: #42b983; }\n\n* {\n  box-sizing: border-box;\n  text-size-adjust: none;\n  user-select: none;\n  outline: none; }\n\nhtml {\n  height: 100%; }\n\nbody {\n  font-family: 'Inconsolata', monospace;\n  background-color: #111;\n  color: #fff;\n  font-size: 12px;\n  line-height: 1.4em;\n  overflow: hidden;\n  outline: none; }\n\nbody.loading {\n  opacity: .5;\n  cursor: wait; }\n  body.loading main, body.loading aside {\n    pointer-events: none; }\n\naside {\n  position: absolute;\n  top: 0;\n  left: 0;\n  min-height: 100vh;\n  width: 200px;\n  border-right: 1px solid #333; }\n\n#root {\n  min-height: 100vh; }\n\n.page-url,\n.image-url {\n  color: #fff; }\n\n.image-size.bad {\n  background-color: #ff9a9a;\n  color: #333; }\n\ntd {\n  padding: 5px;\n  max-width: calc(100vw - 240px);\n  word-break: break-all;\n  min-width: 150px; }\n  td a {\n    color: #fff;\n    text-decoration: none; }\n    td a:hover {\n      text-decoration: underline; }\n\n.menu {\n  padding: 10px;\n  border-bottom: 1px solid #333; }\n\n.menu a {\n  display: inline-block;\n  width: 100%;\n  padding: 10px;\n  text-align: center;\n  text-transform: uppercase;\n  background-color: #222;\n  color: #fff;\n  text-decoration: none;\n  margin-bottom: 10px; }\n  .menu a:hover {\n    background-color: #333; }\n\n.sectionEditor {\n  width: 100%; }\n\n#sectionGrid {\n  margin: 0.5vw 2vw;\n  margin-bottom: 1vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.sectionCell {\n  background-color: #1F1F1F;\n  color: #fff;\n  border: 2px dotted #EC0396;\n  border-radius: 4px;\n  padding: 0px;\n  width: 75px;\n  height: 50px; }\n  .sectionCell.sectionSelected {\n    border-width: 2px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n  .sectionCell.sectionExists {\n    background-color: #1D1D1D;\n    border-style: solid; }\n\n#sequenceSlotGrid {\n  margin: 0.5vw 2vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 5px;\n  grid-template-columns: repeat(8, 75px); }\n\n.addSequenceButton {\n  color: #00C7FF;\n  width: 75px;\n  height: 50px;\n  border: 2px dotted #EC0396;\n  border-radius: 2px;\n  background-color: #1F1F1F; }\n\n.incrementableSequenceSlot {\n  padding: 0px;\n  width: 75px;\n  height: 50px;\n  border: 2px solid #EC0396;\n  border-radius: 2px;\n  padding-bottom: 0px;\n  display: flex;\n  flex-direction: column; }\n  .incrementableSequenceSlot .sequenceLabel {\n    padding: 2px;\n    flex-grow: 1; }\n  .incrementableSequenceSlot.sequenceSelected {\n    border-width: 2px;\n    border-top-right-radius: 0px;\n    border-color: #00C7FF; }\n    .incrementableSequenceSlot.sequenceSelected .sequenceEditButtons button {\n      color: #00C7FF;\n      border-color: #00C7FF; }\n  .incrementableSequenceSlot .sequenceEditButtons {\n    display: flex;\n    justify-content: flex-end; }\n    .incrementableSequenceSlot .sequenceEditButtons button {\n      color: #00C7FF;\n      font-size: 11pt;\n      background-color: #000;\n      font-weight: 200;\n      width: 20px;\n      border: 1px solid #EC0396;\n      border-bottom: 0px;\n      border-right: 0px;\n      margin-bottom: 0px;\n      outline: none; }\n\n#noteGrid {\n  margin: 0.5vw 2vw;\n  margin-bottom: 1vw;\n  width: 100%;\n  display: grid;\n  grid-gap: 4px;\n  grid-template-columns: repeat(16, 32px); }\n\n.noteCell {\n  border: 1px solid #EC0396;\n  width: 32px;\n  height: 32px; }\n  .noteCell.noteExists {\n    background-color: #00C7FF; }\n", ""]);
 
 // exports
 

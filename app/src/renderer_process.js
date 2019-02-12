@@ -27,12 +27,20 @@ const initialState = {
     {
       id: 0,
       label: "seq 0",
-      noteData: []
+      noteData: Array(16).fill(0).map(x=>[])
     }
-  ]
+  ],
+  notes: []
 };
 
-const store = createStore(rootReducer, initialState, applyMiddleware(logger));
+const store = createStore(
+  rootReducer,
+  initialState,
+  compose(
+    applyMiddleware(logger),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  )
+);
 
 const rootElement = document.getElementById('root');
 

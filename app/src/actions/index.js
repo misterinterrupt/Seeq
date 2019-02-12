@@ -4,6 +4,7 @@ export const INCREMENT_SEQUENCE_SLOT_SEQUENCE = 'INCREMENT_SEQUENCE_SLOT_SEQUENC
 export const DECREMENT_SEQUENCE_SLOT_SEQUENCE = 'DECREMENT_SEQUENCE_SLOT_SEQUENCE';
 export const ADD_SEQUENCE_TO_SECTION = 'ADD_SEQUENCE_TO_SECTION';
 export const DELETE_SEQUENCE_FROM_SECTION = 'DELETE_SEQUENCE_FROM_SECTION';
+export const ADD_NOTE_TO_SEQUENCE = 'ADD_NOTE_TO_SEQUENCE';
 
 export const addSelectSection = (id) => ({
   type: ADD_SELECT_SECTION,
@@ -36,4 +37,9 @@ export const addSequenceToSection = () => ({
 export const deleteSequenceFromSection = (sequenceSlotIndex) => ({
   type: DELETE_SEQUENCE_FROM_SECTION,
   sequenceSlotIndex
+});
+
+export const addNoteToSequence = (notePosition) => ({
+  type: 'ADD_NOTE_TO_SEQUENCE',
+  notePosition
 })

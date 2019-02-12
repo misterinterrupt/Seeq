@@ -1,0 +1,2 @@
+get the latest archlinux arm
+http://ca.us.mirror.archlinuxarm.org/os/ArchLinuxARM-rpi-3-latest.tar.gz

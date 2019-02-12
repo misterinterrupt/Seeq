@@ -6,7 +6,8 @@ import {
   INCREMENT_SEQUENCE_SLOT_SEQUENCE,
   DECREMENT_SEQUENCE_SLOT_SEQUENCE,
   ADD_SEQUENCE_TO_SECTION,
-  DELETE_SEQUENCE_FROM_SECTION
+  DELETE_SEQUENCE_FROM_SECTION,
+  ADD_NOTE_TO_SEQUENCE
 } from '../actions';
 
 const rootReducer = (state={}, action) => {
@@ -15,9 +16,9 @@ const rootReducer = (state={}, action) => {
     return listOfObjectsWithIds.sort((a,b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
   }
 
-  let determineNextId = (listOfObjectsWithIds, currentId, direction) => {
+  let determineSequentialId  = (listOfObjectsWithIds, currentId, direction) => {
     let sortedList = sortById(listOfObjectsWithIds);
-    let modifier = direction=="UP"?1:-1;
+    let modifier = direction=="NEXT"?1:-1;
     let nextId;
     let currentItemIndex = sortedList.findIndex((item) => {
       return item.id === currentId;
@@ -72,12 +73,12 @@ const rootReducer = (state={}, action) => {
   }
 
   const incrementSequenceSlotId = (state, action) => {
-    let nextSequenceId = determineNextId(state.sequences, action.sequenceId, "UP");
+    let nextSequenceId = determineSequentialId (state.sequences, action.sequenceId, "NEXT");
     return updateSequenceSlotId(state, action, nextSequenceId);
   }
 
   const decrementSequenceSlotId = (state, action) => {
-    let previousSequenceId = determineNextId(state.sequences, action.sequenceId, "Down");
+    let previousSequenceId = determineSequentialId (state.sequences, action.sequenceId, "PREVIOUS");
     return updateSequenceSlotId(state, action, previousSequenceId);
   }
 
@@ -116,7 +117,7 @@ const rootReducer = (state={}, action) => {
       {
         id: newSequenceId,
         label: "seq " + newSequenceId,
-        noteData: []
+        noteData: Array(16).fill(0).map(x => [])
       }
     ];
     return {
@@ -149,6 +150,34 @@ const rootReducer = (state={}, action) => {
     };
   }
 
+  const addNoteToSequence = (state, action) => {
+    let updatedNotes = [...state.notes];
+    let newNoteId = updatedNotes.length;
+    let newNote = {
+      id: newNoteId,
+      pitch: 'C3',
+      velocity: 100
+    };
+    updatedNotes.push(newNote);
+    // TODO:: factor these array accesses into nested functions for readability
+
+    let selectedSequenceSlotIndex = state.sections[state.editorData.selectedSections[0]].selectedSequenceSlot[0];
+    let selectedSequenceId = state.sections[state.editorData.selectedSections[0]].sequenceSlots[selectedSequenceSlotIndex];
+    let updatedSequences = [...state.sequences];
+    let updatedSequenceIndex = updatedSequences.findIndex((sequence=>sequence.id===selectedSequenceId));
+    let updatedSequence = {
+      ...updatedSequences[updatedSequenceIndex],
+      noteData: [...updatedSequences[updatedSequenceIndex].noteData]
+    };
+    updatedSequence.noteData[action.notePosition].push(newNoteId);
+    updatedSequences[updatedSequenceIndex] = updatedSequence;
+    return {
+      ...state,
+      sequences: updatedSequences,
+      notes: updatedNotes
+    }
+  }
+
   switch (action.type) {
     case ADD_SELECT_SECTION:
       return addSelectSection(state, action);
@@ -167,6 +196,9 @@ const rootReducer = (state={}, action) => {
 
     case DELETE_SEQUENCE_FROM_SECTION:
       return deleteSequenceFromSection(state, action);
+
+    case ADD_NOTE_TO_SEQUENCE:
+      return addNoteToSequence(state, action);
 
     default:
       return {...state};
