@@ -144,7 +144,6 @@ td{
   border: 2px dotted #EC0396;
   border-radius: 2px;
   background-color: #1F1F1F;
-  outline: none;
 }
 
 .incrementableSequenceSlot {
@@ -202,5 +201,24 @@ td{
 
       }
     }
+  }
+}
+
+#noteGrid {
+  margin: 0.5vw 2vw;
+  margin-bottom: 1vw;
+  width: 100%;
+  display: grid;
+  grid-gap: 4px;
+  grid-template-columns: repeat(16, 32px);
+}
+
+.noteCell {
+  border: 1px solid #EC0396;
+  width: 32px;
+  height: 32px;
+
+  &.noteExists {
+    background-color: #00C7FF;
   }
 }
