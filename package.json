@@ -1,16 +1,18 @@
 {
-  "name": "electron-react-webpack",
+  "name": "seeq",
   "version": "1.0.0",
-  "description": "Electron + React 16 + Webpack 4 template.",
+  "description": "",
   "main": "main_process.js",
   "scripts": {
     "bundle": "webpack --mode development",
+    "build": "webpack --mode production",
     "serve": "electron .",
-    "start": "npm-run-all --parallel bundle serve"
+    "dev": "npm-run-all --parallel bundle serve",
+    "start": "npm-run-all --parallel build serve"
   },
-  "author": "J. Renato Ramos González <renato.etc.etc.etc@gmail.com>",
-  "repository": "pastahito/electron-react-webpack",
-  "license": "WTFPL",
+  "author": "misterinterrupt",
+  "repository": "https://github.com/misterinterrupt/Seeq",
+  "license": "Copyright IRQZero 2019",
   "devDependencies": {
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
     "babel-core": "^6.26.0",
@@ -23,8 +25,8 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "css-loader": "^0.28.11",
-    "electron": "^1.8.2",
     "electron-devtools-installer": "^2.2.4",
+    "electron-rebuild": "^1.8.4",
     "electron-reload": "^1.2.2",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.10",
@@ -44,8 +46,14 @@
     "webpack-cli": "^3.1.1"
   },
   "dependencies": {
+    "bindings": "^1.4.0",
     "classnames": "^2.2.6",
+    "copy-webpack-plugin": "^4.6.0",
+    "electron": "^4.0.4",
+    "midi": "^0.9.5",
+    "nanotimer": "^0.3.15",
     "react": "^16.2.0",
+    "shared-memory-disruptor": "^2.0.3",
     "styled-components": "^4.1.3"
   }
 }

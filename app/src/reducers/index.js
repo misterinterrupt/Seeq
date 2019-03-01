@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { MusicalConstants, TimingConstants } from '../constants'
 
 import {
   ADD_SELECT_SECTION,
@@ -7,14 +8,16 @@ import {
   DECREMENT_SEQUENCE_SLOT_SEQUENCE,
   ADD_SEQUENCE_TO_SECTION,
   DELETE_SEQUENCE_FROM_SECTION,
-  ADD_NOTE_TO_SEQUENCE
+  TOGGLE_NOTE_IN_SEQUENCE,
+  REGISTER_TRANSPORT
 } from '../actions';
+
+export const sortById = (listOfObjectsWithIds) => {
+  return listOfObjectsWithIds.sort((a,b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+};
 
 const rootReducer = (state={}, action) => {
 
-  let sortById = (listOfObjectsWithIds) => {
-    return listOfObjectsWithIds.sort((a,b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
-  }
 
   let determineSequentialId  = (listOfObjectsWithIds, currentId, direction) => {
     let sortedList = sortById(listOfObjectsWithIds);
@@ -30,13 +33,13 @@ const rootReducer = (state={}, action) => {
       nextItemIndex = 0;
     }
     return sortedList[nextItemIndex].id;
-  }
+  };
 
   let determineSelectedSectionIndex = (state) => {
     return state.sections.findIndex(section => {
       return section.id === state.editorData.selectedSections[0];
     });
-  }
+  };
 
   const addSelectSection = () => {
     let newSection = [];
@@ -53,6 +56,7 @@ const rootReducer = (state={}, action) => {
     return {
       ...state,
       editorData: {
+        ...state.editorData,
         selectedSections: [action.id]
       },
       sections: sortById(newSection.concat(state.sections))
@@ -70,17 +74,17 @@ const rootReducer = (state={}, action) => {
       ...state,
       sections: sortById(updatedSections)
     };
-  }
+  };
 
   const incrementSequenceSlotId = (state, action) => {
-    let nextSequenceId = determineSequentialId (state.sequences, action.sequenceId, "NEXT");
+    let nextSequenceId = determineSequentialId(state.sequences, action.sequenceId, "NEXT");
     return updateSequenceSlotId(state, action, nextSequenceId);
-  }
+  };
 
   const decrementSequenceSlotId = (state, action) => {
     let previousSequenceId = determineSequentialId (state.sequences, action.sequenceId, "PREVIOUS");
     return updateSequenceSlotId(state, action, previousSequenceId);
-  }
+  };
 
   const updateSequenceSlotId = (state={}, action, nextSequenceId) => {
     if(action.sequenceId === nextSequenceId) {
@@ -117,7 +121,9 @@ const rootReducer = (state={}, action) => {
       {
         id: newSequenceId,
         label: "seq " + newSequenceId,
-        noteData: Array(16).fill(0).map(x => [])
+        zoomNoteValue: '1/16',
+        length: '1.0.000',
+        noteData: {}
       }
     ];
     return {
@@ -148,35 +154,69 @@ const rootReducer = (state={}, action) => {
       ...state,
       sections: sortById(updatedSections)
     };
-  }
+  };
 
-  const addNoteToSequence = (state, action) => {
-    let updatedNotes = [...state.notes];
-    let newNoteId = updatedNotes.length;
-    let newNote = {
-      id: newNoteId,
-      pitch: 'C3',
-      velocity: 100
-    };
-    updatedNotes.push(newNote);
-    // TODO:: factor these array accesses into nested functions for readability
-
-    let selectedSequenceSlotIndex = state.sections[state.editorData.selectedSections[0]].selectedSequenceSlot[0];
-    let selectedSequenceId = state.sections[state.editorData.selectedSections[0]].sequenceSlots[selectedSequenceSlotIndex];
+  const toggleNoteInSequence = (state, action) => {
+    let selectedSectionId = state.editorData.selectedSections[0];
+    let selectedSection = state.sections.find(section => section.id === selectedSectionId);
+    let selectedSequenceSlotIndex = selectedSection.selectedSequenceSlot[0];
+    let selectedSequenceId = selectedSection.sequenceSlots[selectedSequenceSlotIndex];
     let updatedSequences = [...state.sequences];
     let updatedSequenceIndex = updatedSequences.findIndex((sequence=>sequence.id===selectedSequenceId));
     let updatedSequence = {
       ...updatedSequences[updatedSequenceIndex],
-      noteData: [...updatedSequences[updatedSequenceIndex].noteData]
+      noteData: {...updatedSequences[updatedSequenceIndex].noteData}
     };
-    updatedSequence.noteData[action.notePosition].push(newNoteId);
+    let pulsePositionOn = '' + action.noteTicks;
+    let M = MusicalConstants;
+    let T = TimingConstants;
+    let noteLength = (M.note[updatedSequence.zoomNoteValue].noteValueToTickMultiplier * T.ppqn) - 4;
+    let pulsePositionOff = '' + (action.noteTicks + noteLength);
+    let newNoteOn = {
+      type: 'on',
+      pitch: 'C3',
+      velocity: 127
+    };
+    let newNoteOff = {
+      type: 'off',
+      pitch: 'C3',
+      velocity: 0
+    };
+    console.log('pulsePositionOn', pulsePositionOn);
+    console.log('pulsePositionOff', pulsePositionOff);
+    if(updatedSequence.noteData[pulsePositionOn] === undefined) {
+      updatedSequence.noteData[pulsePositionOn] = [];
+    }
+    if(updatedSequence.noteData[pulsePositionOff] === undefined) {
+      updatedSequence.noteData[pulsePositionOff] = [];
+    }
+    updatedSequence.noteData[pulsePositionOn].push(newNoteOn);
+    updatedSequence.noteData[pulsePositionOff].push(newNoteOff);
+
     updatedSequences[updatedSequenceIndex] = updatedSequence;
     return {
       ...state,
-      sequences: updatedSequences,
-      notes: updatedNotes
+      sequences: updatedSequences
     }
-  }
+  };
+
+  const registerTransport = (state, action) => {
+    let newTransport = {
+      id: action.transportId,
+      tempo: action.tempo,
+      startTime: 0,
+      currentPosition: 0,
+      playing: false
+    };
+    let updatedTransports = [
+      ...state.transports,
+      newTransport
+    ];
+    return {
+      ...state,
+      transports: updatedTransports
+    }
+  };
 
   switch (action.type) {
     case ADD_SELECT_SECTION:
@@ -197,8 +237,11 @@ const rootReducer = (state={}, action) => {
     case DELETE_SEQUENCE_FROM_SECTION:
       return deleteSequenceFromSection(state, action);
 
-    case ADD_NOTE_TO_SEQUENCE:
-      return addNoteToSequence(state, action);
+    case TOGGLE_NOTE_IN_SEQUENCE:
+      return toggleNoteInSequence(state, action);
+
+    case REGISTER_TRANSPORT:
+      return registerTransport(state, action);
 
     default:
       return {...state};

@@ -1,4 +1,8 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const NormalModuleReplacementPlugin = require('webpack').NormalModuleReplacementPlugin;
+const ContextReplacementPlugin = require('webpack').ContextReplacementPlugin;
+const path = require('path');
 
 module.exports = {
 
@@ -6,11 +10,14 @@ module.exports = {
 
     target: 'electron-renderer',
 
-    entry: './app/src/renderer_process.js',
+    entry: [
+      './app/src/renderer_process.js',
+      './app/src/systemclock/startClockThread.js'
+    ],
 
     output: {
         path: __dirname + '/app/build',
-        publicPath: 'build/',
+        publicPath: '/app/build/',
         filename: 'bundle.js'
     },
 
@@ -50,25 +57,39 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(png|jpg|gif|svg)$/,
-                loader: 'file-loader',
-                query: {
-                    name: '[name].[ext]?[hash]'
-                }
+              test: /\.(png|jpg|gif|svg)$/,
+              loader: 'file-loader',
+              query: {
+                  name: '[name].[ext]?[hash]'
+              }
             }
         ]
     },
 
     plugins: [
-        new ExtractTextPlugin({
-            filename: 'bundle.css',
-            disable: false,
-            allChunks: true
-        })
+      new CopyWebpackPlugin([
+        {
+          from: `${__dirname}/node_modules/midi/build/Release/midi.node`,
+          to: `${__dirname}/app/build`
+        },
+        {
+          from: `${__dirname}/node_modules/shared-memory-disruptor/build/Release/disruptor.node`,
+          to: `${__dirname}/app/build`
+        }
+      ]),
+      new NormalModuleReplacementPlugin(
+        /^bindings$/,
+        `${__dirname}/app/bindings.js`
+      ),
+      new ExtractTextPlugin({
+        filename: 'bundle.css',
+        disable: false,
+        allChunks: true
+      })
     ],
 
     resolve: {
-      extensions: ['.js', '.json', '.jsx']
+      extensions: ['.js', '.json', '.jsx', '.node']
     }
 
 }

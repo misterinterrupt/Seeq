@@ -1,2 +1,34 @@
 get the latest archlinux arm
 http://ca.us.mirror.archlinuxarm.org/os/ArchLinuxARM-rpi-3-latest.tar.gz
+
+
+
+
+timing scratch
+// if the notes are stored as a combination of bars/beats
+// bar.beat.?
+
+// if note positions are stored as a relative number of pulses for a given sequence
+// to calculate the pulsePosition:
+// 1/512 note zoom level -> index / (ppqn * .0078125)
+// 1/256 note zoom level -> index / (ppqn * .015625)
+// 1/128 note zoom level -> index / (ppqn * .03125)
+// 1/64 note zoom level  -> index / (ppqn * .0625)
+// 1/32 note zoom level  -> index / (ppqn * .125)
+// 1/16 note zoom level  -> index / (ppqn * .25)
+// 1/8 note zoom level   -> index / (ppqn * .5)
+// 1/4 note zoom level   -> index / (ppqn * 1)
+// 1/2 note zoom level   -> index / (ppqn * 2)
+
+ns elapsed since play was pressed
+divide elapsed time by # ns in a 1/4n at current clock tempo
+length of 1/4n in ns / ppqn
+
+
+
+// each position can be a fraction that can be used to calculate the position for a given resolution and tempo
+// the fraction represents a note value, eg. 1/16th = .25, 1/32nd = .125
+
+
+// possible fraction of a second to run systemClock at
+// 60s / ( 1000maxbpm * 512ppqn ) = 0.000117187s

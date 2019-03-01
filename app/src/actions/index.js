@@ -4,7 +4,8 @@ export const INCREMENT_SEQUENCE_SLOT_SEQUENCE = 'INCREMENT_SEQUENCE_SLOT_SEQUENC
 export const DECREMENT_SEQUENCE_SLOT_SEQUENCE = 'DECREMENT_SEQUENCE_SLOT_SEQUENCE';
 export const ADD_SEQUENCE_TO_SECTION = 'ADD_SEQUENCE_TO_SECTION';
 export const DELETE_SEQUENCE_FROM_SECTION = 'DELETE_SEQUENCE_FROM_SECTION';
-export const ADD_NOTE_TO_SEQUENCE = 'ADD_NOTE_TO_SEQUENCE';
+export const TOGGLE_NOTE_IN_SEQUENCE = 'TOGGLE_NOTE_IN_SEQUENCE';
+export const REGISTER_TRANSPORT = 'REGISTER_TRANSPORT';
 
 export const addSelectSection = (id) => ({
   type: ADD_SELECT_SECTION,
@@ -39,7 +40,13 @@ export const deleteSequenceFromSection = (sequenceSlotIndex) => ({
   sequenceSlotIndex
 });
 
-export const addNoteToSequence = (notePosition) => ({
-  type: 'ADD_NOTE_TO_SEQUENCE',
-  notePosition
-})
+export const toggleNoteInSequence = (noteTicks) => ({
+  type: TOGGLE_NOTE_IN_SEQUENCE,
+  noteTicks
+});
+
+export const registerTransport = (transportId, tempo) => ({
+  type: REGISTER_TRANSPORT,
+  transportId,
+  tempo
+});
